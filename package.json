@@ -1,0 +1,24 @@
+{
+  "name": "backendproyect",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AleMot94/Back_End_Proyect.git"
+  },
+  "author": "alejandro motrel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AleMot94/Back_End_Proyect/issues"
+  },
+  "homepage": "https://github.com/AleMot94/Back_End_Proyect#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
