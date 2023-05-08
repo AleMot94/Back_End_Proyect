@@ -1,18 +1,21 @@
-const fs = require("fs");
+import fs from "fs";
 
-const createFile = async () => {
-  if (!fs.existsSync("products.json")) {
-    return await fs.promises.writeFile("products.json", "[]");
-  }
-};
-
-createFile();
-
-class ProductManager {
+export default class ProductManager {
   constructor() {
     this.path = "products.json";
     this.products = [];
     this.id = 0;
+    if (!fs.existsSync(this.path)) return fs.writeFileSync(this.path, "[]");
+    try {
+      const data = fs.readFileSync(this.path, "utf-8");
+      this.products = JSON.parse(data);
+    } catch (err) {
+      if (err.code === "ENOENT") {
+        fs.writeFileSync(this.path, "[]");
+      } else {
+        throw err;
+      }
+    }
   }
 
   async addProduct(title, description, price, thumbnail, code, stock) {
@@ -63,7 +66,7 @@ class ProductManager {
   async getProducts() {
     const fileProducts = await fs.promises.readFile(this.path, "utf-8");
     const fileProductsParse = JSON.parse(fileProducts);
-    console.log(fileProductsParse);
+    return fileProductsParse;
   }
 
   async getProductById(id) {
@@ -72,9 +75,9 @@ class ProductManager {
     const findProd = fileProductsParse.find((prod) => prod.id == id);
 
     if (findProd) {
-      return console.log(findProd);
+      return findProd;
     } else {
-      console.log("producto no encontrado");
+      return { error: "no se encontro producto con es id" };
     }
   }
 
@@ -114,55 +117,3 @@ class ProductManager {
     }
   }
 }
-
-const prodManager = new ProductManager();
-
-async function algo() {
-  await prodManager.addProduct(
-    "producto prueba",
-    "Este es un producto prueba",
-    200,
-    "Sin imagen",
-    "abc123",
-    25
-  );
-
-  await prodManager.addProduct(
-    "producto prueba 2",
-    "Este es un producto prueba 2",
-    200,
-    "Sin imagen",
-    "abc124",
-    25
-  );
-
-  await prodManager.addProduct(
-    "producto prueba 3",
-    "Este es un producto prueba 3",
-    200,
-    "Sin imagen",
-    "abc125",
-    25
-  );
-  console.log("TODOS LOS PRODUCTOS");
-  await prodManager.getProducts();
-
-  console.log("SE BUSCA UN PRODUCTO POR SI ID");
-  await prodManager.getProductById(2);
-
-  console.log(
-    "SE ACTUALIZA UN CAMPO DEL PRODUCTO BUSCADO POR SI ID, EL TITULO EN ESTE CASO"
-  );
-  await prodManager.updateProduct(2, "title", "nuevo titulo");
-
-  await prodManager.getProductById(2);
-
-  console.log("ELIMINAR UN PRODUCTO POR SU ID, EN ESTE CASO CON EL ID 3");
-  await prodManager.deleteProduct(3);
-
-  await prodManager.getProducts();
-}
-
-algo();
-
-export default ProductManager;
