@@ -2,11 +2,11 @@ import fs from "fs";
 
 class ProductManager {
   constructor() {
-    this.path = "products.json";
+    this.path = "./src/products.json";
     this.products = [];
-    this.lastIdPath = "lastIdPath.json";
+    this.lastIdPath = "./src/lastIdPath.json";
     this.id = 0;
-
+    /*
     const idString = JSON.stringify(this.id);
     fs.writeFileSync(this.lastIdPath, idString);
     const lastIdString = fs.readFileSync(this.lastIdPath, "utf-8");
@@ -17,9 +17,9 @@ class ProductManager {
     fs.writeFileSync(this.path, prodString);
     const productsString = fs.readFileSync(this.path, "utf-8");
     const products = JSON.parse(productsString);
-    this.products = products;
+    this.products = products;*/
 
-    /* NO SE SI DEJARLO COMO ESTA, O VALIDAR SI YA EXISTE EL ARCHIVO, NO SE CUAL ES LA FORMA MAS CORRECTA
+    // NO SE SI DEJARLO COMO ESTA, O VALIDAR SI YA EXISTE EL ARCHIVO, NO SE CUAL ES LA FORMA MAS CORRECTA
     if (fs.existsSync(this.lastIdPath)) {
       const lastIdString = fs.readFileSync(this.lastIdPath, "utf-8");
       const id = parseInt(lastIdString);
@@ -36,7 +36,7 @@ class ProductManager {
     } else {
       const prodString = JSON.stringify(this.products);
       fs.writeFileSync(this.path, prodString);
-    }*/
+    }
   }
 
   async addProduct(product) {

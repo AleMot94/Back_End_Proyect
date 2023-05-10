@@ -8,100 +8,37 @@ const port = 3000;
 
 const prodManager = new ProductManager();
 
-async function addProd() {
+app.get("/", (req, res) => {
+  res.status(200).send("primer endpoint");
+});
+
+app.get("/products", async (req, res) => {
+  const products = await prodManager.getProducts();
+  const limit = req.query.limit;
+  const arrayLimit = products.slice(0, limit);
+  res.status(200).json({
+    status: "succes",
+    msg: "lista de productos",
+    data: arrayLimit,
+  });
+});
+
+app.get("/products/:pid", async (req, res) => {
   try {
-    await prodManager.addProduct({
-      title: "producto prueba",
-      description: "Este es un producto prueba",
-      price: 200,
-      thumbnail: "Sin imagen",
-      code: "abc123",
-      stock: 25,
-    });
-
-    await prodManager.addProduct({
-      title: "producto prueba 2",
-      description: "Este es un producto prueba 2",
-      price: 300,
-      thumbnail: "Sin imagen",
-      code: "abc124",
-      stock: 25,
-    });
-
-    await prodManager.addProduct({
-      title: "producto prueba 3",
-      description: "Este es un producto prueba 3",
-      price: 100,
-      thumbnail: "Sin imagen",
-      code: "abc125",
-      stock: 25,
-    });
-
-    await prodManager.addProduct({
-      title: "producto prueba 4",
-      description: "Este es un producto prueba 4",
-      price: 400,
-      thumbnail: "Sin imagen",
-      code: "abc126",
-      stock: 25,
-    });
-
-    await prodManager.addProduct({
-      title: "producto prueba 5",
-      description: "Este es un producto prueba 5",
-      price: 500,
-      thumbnail: "Sin imagen",
-      code: "abc127",
-      stock: 25,
+    const id = req.params.pid;
+    const findProduct = await prodManager.getProductById(id);
+    res.json({
+      status: "succes",
+      msg: "producto con el id " + id,
+      data: findProduct,
     });
   } catch (error) {
-    console.error(error);
-    process.exit(1);
+    res.status(404).json({
+      status: "error",
+      msg: "Producto no encontrado",
+      data: null,
+    });
   }
-}
+});
 
-async function startServer() {
-  try {
-    await addProd();
-
-    app.get("/", (req, res) => {
-      res.status(200).send("primer endpoint");
-    });
-
-    app.get("/products", async (req, res) => {
-      const products = await prodManager.getProducts();
-      const limit = req.query.limit;
-      const arrayLimit = products.slice(0, limit);
-      res.status(200).json({
-        status: "succes",
-        msg: "lista de productos",
-        data: arrayLimit,
-      });
-    });
-
-    app.get("/products/:pid", async (req, res) => {
-      try {
-        const id = req.params.pid;
-        const findProduct = await prodManager.getProductById(id);
-        res.json({
-          status: "succes",
-          msg: "producto con el id " + id,
-          data: findProduct,
-        });
-      } catch (error) {
-        res.status(404).json({
-          status: "error",
-          msg: "Producto no encontrado",
-          data: null,
-        });
-      }
-    });
-
-    app.listen(port, () => console.log(`escuchando el puerto ${port}`));
-  } catch (error) {
-    console.error(error);
-    process.exit(1);
-  }
-}
-
-startServer();
+app.listen(port, () => console.log(`escuchando el puerto ${port}`));
