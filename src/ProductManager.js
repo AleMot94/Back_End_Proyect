@@ -1,53 +1,94 @@
 import fs from "fs";
 
-export default class ProductManager {
+class ProductManager {
   constructor() {
     this.path = "products.json";
     this.products = [];
+    this.lastIdPath = "lastIdPath.json";
     this.id = 0;
-    if (!fs.existsSync(this.path)) return fs.writeFileSync(this.path, "[]");
-    try {
-      const data = fs.readFileSync(this.path, "utf-8");
-      this.products = JSON.parse(data);
-    } catch (err) {
-      if (err.code === "ENOENT") {
-        fs.writeFileSync(this.path, "[]");
-      } else {
-        throw err;
-      }
-    }
-  }
 
-  async addProduct(title, description, price, thumbnail, code, stock) {
-    const file = await fs.promises.readFile(this.path, "utf-8");
-    const products = JSON.parse(file);
+    const idString = JSON.stringify(this.id);
+    fs.writeFileSync(this.lastIdPath, idString);
+    const lastIdString = fs.readFileSync(this.lastIdPath, "utf-8");
+    const id = parseInt(lastIdString);
+    this.id = id;
+
+    const prodString = JSON.stringify(this.products);
+    fs.writeFileSync(this.path, prodString);
+    const productsString = fs.readFileSync(this.path, "utf-8");
+    const products = JSON.parse(productsString);
     this.products = products;
 
-    const codeError = this.products.find((prod) => prod.code == code);
+    /* NO SE SI DEJARLO COMO ESTA, O VALIDAR SI YA EXISTE EL ARCHIVO, NO SE CUAL ES LA FORMA MAS CORRECTA
+    if (fs.existsSync(this.lastIdPath)) {
+      const lastIdString = fs.readFileSync(this.lastIdPath, "utf-8");
+      const id = parseInt(lastIdString);
+      this.id = id;
+    } else {
+      const idString = JSON.stringify(this.id);
+      fs.writeFileSync(this.lastIdPath, idString);
+    }
+
+    if (fs.existsSync(this.path)) {
+      const productsString = fs.readFileSync(this.path, "utf-8");
+      const products = JSON.parse(productsString);
+      this.products = products;
+    } else {
+      const prodString = JSON.stringify(this.products);
+      fs.writeFileSync(this.path, prodString);
+    }*/
+  }
+
+  async addProduct(product) {
+    const file = await fs.promises.readFile(this.path, "utf-8");
+    const products = JSON.parse(file);
+
+    const codeError = products.find((prod) => prod.code == product.code);
 
     if (codeError) {
-      console.log("Error code, existing code");
+      throw new Error("Error code, existing code");
     } else {
-      this.id++;
-      title = title || "no se ingreso ningun valor";
-      description = description || "no se ingreso ningun valor";
-      price = price || "no se ingreso ningun valor";
-      thumbnail = thumbnail || "no se ingreso ningun valor";
-      code = code || "no se ingreso ningun valor";
-      stock = stock || "no se ingreso ningun valor";
+      const newId = this.id++;
+      const newIdString = JSON.stringify(newId);
+      await fs.promises.writeFile(this.lastIdPath, newIdString);
 
-      if (
-        title == "no se ingreso ningun valor" ||
-        description == "no se ingreso ningun valor" ||
-        price == "no se ingreso ningun valor" ||
-        thumbnail == "no se ingreso ningun valor" ||
-        code == "no se ingreso ningun valor" ||
-        stock == "no se ingreso ningun valor"
-      ) {
-        console.log("Error: hay campos sin completar");
+      const title = product.title || "no se ingreso un titulo";
+      const description =
+        product.description || "no se ingreso una descripcion";
+      const price = product.price || "no se ingreso un precio";
+      const thumbnail = product.thumbnail || "no se ingreso una imagen";
+      const code = product.code || "no se ingreso un codigo";
+      const stock = product.stock || "no se ingreso cantidad de stock";
+
+      const errorMessages = {
+        title: title,
+        description: description,
+        price: price,
+        thumbnail: thumbnail,
+        code: code,
+        stock: stock,
+      };
+
+      if (title == "no se ingreso un titulo") {
+        throw new Error(errorMessages.title);
+      }
+      if (description == "no se ingreso una descripcion") {
+        throw new Error(errorMessages.description);
+      }
+      if (price == "no se ingreso un precio") {
+        throw new Error(errorMessages.price);
+      }
+      if (thumbnail == "no se ingreso una imagen") {
+        throw new Error(errorMessages.thumbnail);
+      }
+      if (code == "no se ingreso un codigo") {
+        throw new Error(errorMessages.code);
+      }
+      if (stock == "no se ingreso cantidad de stock") {
+        throw new Error(errorMessages.stock);
       } else {
         const product = {
-          id: this.id,
+          id: newId,
           title,
           description,
           price,
@@ -77,20 +118,41 @@ export default class ProductManager {
     if (findProd) {
       return findProd;
     } else {
-      return { error: "no se encontro producto con es id" };
+      throw new Error("producto no encontrado");
     }
   }
 
-  async updateProduct(id, prop, newValor) {
+  async updateProduct(id, updateProd) {
     const fileProducts = await fs.promises.readFile(this.path, "utf-8");
     const fileProductsParse = JSON.parse(fileProducts);
 
     const findProd = fileProductsParse.find((prod) => prod.id == id);
 
     if (findProd == undefined) {
-      console.log("producto no encontrado");
+      throw new Error("no se encontro un producto con ese ID");
     } else {
-      findProd[prop] = newValor;
+      const validKeys = [
+        "title",
+        "description",
+        "price",
+        "thumbnail",
+        "code",
+        "stock",
+      ];
+      const updateKeys = Object.keys(updateProd);
+      for (let key of updateKeys) {
+        if (!validKeys.includes(key)) {
+          throw new Error(`La propiedad '${key}' no es válida`);
+        }
+      }
+
+      for (let prop in updateProd) {
+        if (prop in findProd && prop !== "id") {
+          findProd[prop] = updateProd[prop];
+        } else {
+          throw new Error("no se puede modificar el ID");
+        }
+      }
       const productsString = JSON.stringify(fileProductsParse);
       await fs.promises.writeFile(this.path, productsString);
     }
@@ -105,15 +167,17 @@ export default class ProductManager {
     );
 
     if (positionProduct == -1) {
-      console.log("producto no encontrado");
+      throw new Error("producto no encontrado");
     } else {
       delete fileProductsParse[positionProduct];
       const productsDelete = fileProductsParse.filter(
         (prod) => prod !== undefined
       );
-
       const productsString = JSON.stringify(productsDelete);
       await fs.promises.writeFile(this.path, productsString);
+      return "producto eliminado";
     }
   }
 }
+
+export default ProductManager;
