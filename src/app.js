@@ -5,6 +5,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const port = 3000;
+
 const prodManager = new ProductManager();
 
 async function addProd() {
@@ -71,7 +72,7 @@ async function startServer() {
       const products = await prodManager.getProducts();
       const limit = req.query.limit;
       const arrayLimit = products.slice(0, limit);
-      res.json({
+      res.status(200).json({
         status: "succes",
         msg: "lista de productos",
         data: arrayLimit,
@@ -79,13 +80,21 @@ async function startServer() {
     });
 
     app.get("/products/:pid", async (req, res) => {
-      const id = req.params.pid;
-      const findProduct = await prodManager.getProductById(id);
-      res.json({
-        status: "succes",
-        msg: "producto con el id " + id,
-        data: findProduct,
-      });
+      try {
+        const id = req.params.pid;
+        const findProduct = await prodManager.getProductById(id);
+        res.json({
+          status: "succes",
+          msg: "producto con el id " + id,
+          data: findProduct,
+        });
+      } catch (error) {
+        res.status(404).json({
+          status: "error",
+          msg: "Producto no encontrado",
+          data: null,
+        });
+      }
     });
 
     app.listen(port, () => console.log(`escuchando el puerto ${port}`));
