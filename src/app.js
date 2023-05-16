@@ -1,44 +1,13 @@
+//@ts-check
 import express from "express";
-import ProductManager from "./ProductManager.js";
+
+import { routerProducts } from "./router/products.js";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const port = 3000;
+const port = 8080;
 
-const prodManager = new ProductManager();
-
-app.get("/", (req, res) => {
-  res.status(200).send("primer endpoint");
-});
-
-app.get("/products", async (req, res) => {
-  const products = await prodManager.getProducts();
-  const limit = req.query.limit;
-  const arrayLimit = products.slice(0, limit);
-  res.status(200).json({
-    status: "succes",
-    msg: "lista de productos",
-    data: arrayLimit,
-  });
-});
-
-app.get("/products/:pid", async (req, res) => {
-  try {
-    const id = req.params.pid;
-    const findProduct = await prodManager.getProductById(id);
-    res.json({
-      status: "succes",
-      msg: "producto con el id " + id,
-      data: findProduct,
-    });
-  } catch (error) {
-    res.status(404).json({
-      status: "error",
-      msg: "Producto no encontrado",
-      data: null,
-    });
-  }
-});
+app.use("/api/products", routerProducts);
 
 app.listen(port, () => console.log(`escuchando el puerto ${port}`));
