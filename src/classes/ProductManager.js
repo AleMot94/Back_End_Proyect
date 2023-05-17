@@ -30,64 +30,84 @@ class ProductManager {
     const file = await fs.promises.readFile(this.path, "utf-8");
     const products = JSON.parse(file);
 
-    const codeError = products.find((prod) => prod.code == product.code);
+    const productKeys = Object.keys(product);
+    const profuctFormat = [
+      "title",
+      "description",
+      "price",
+      "thumbnail",
+      "status",
+      "code",
+      "stock",
+    ];
 
-    if (codeError) {
-      throw new Error("Error code, existing code");
-    } else {
-      const newId = ++this.id;
-      const newIdString = JSON.stringify(newId);
-      await fs.promises.writeFile(this.lastIdPath, newIdString);
+    if (productKeys == profuctFormat) {
+      const codeError = products.find((prod) => prod.code == product.code);
 
-      const title = product.title || "no se ingreso un titulo";
-      const description =
-        product.description || "no se ingreso una descripcion";
-      const price = product.price || "no se ingreso un precio";
-      const thumbnail = product.thumbnail || "no se ingreso una imagen";
-      const code = product.code || "no se ingreso un codigo";
-      const stock = product.stock || "no se ingreso cantidad de stock";
-
-      const errorMessages = {
-        title: title,
-        description: description,
-        price: price,
-        thumbnail: thumbnail,
-        code: code,
-        stock: stock,
-      };
-
-      if (title == "no se ingreso un titulo") {
-        throw new Error(errorMessages.title);
-      }
-      if (description == "no se ingreso una descripcion") {
-        throw new Error(errorMessages.description);
-      }
-      if (price == "no se ingreso un precio") {
-        throw new Error(errorMessages.price);
-      }
-      if (thumbnail == "no se ingreso una imagen") {
-        throw new Error(errorMessages.thumbnail);
-      }
-      if (code == "no se ingreso un codigo") {
-        throw new Error(errorMessages.code);
-      }
-      if (stock == "no se ingreso cantidad de stock") {
-        throw new Error(errorMessages.stock);
+      if (codeError) {
+        throw "codigo del producto ya existente";
       } else {
-        const product = {
-          id: newId,
-          title,
-          description,
-          price,
-          thumbnail,
-          code,
-          stock,
+        const newId = ++this.id;
+        const newIdString = JSON.stringify(newId);
+        await fs.promises.writeFile(this.lastIdPath, newIdString);
+
+        const title = product.title || "no se ingreso un titulo";
+        const description =
+          product.description || "no se ingreso una descripcion";
+        const price = product.price || "no se ingreso un precio";
+        const thumbnail = product.thumbnail || "no se ingreso una imagen";
+        const code = product.code || "no se ingreso un codigo";
+        const stock = product.stock || "no se ingreso cantidad de stock";
+        const status = product.status || "no se ingreso el estado";
+
+        const errorMessages = {
+          title: title,
+          description: description,
+          price: price,
+          thumbnail: thumbnail,
+          code: code,
+          stock: stock,
         };
 
-        this.products.push(product);
-        const productsString = JSON.stringify(this.products);
-        await fs.promises.writeFile(this.path, productsString);
+        if (title == "no se ingreso un titulo") {
+          throw errorMessages.title;
+        }
+        if (description == "no se ingreso una descripcion") {
+          throw errorMessages.description;
+        }
+        if (price == "no se ingreso un precio") {
+          throw errorMessages.price;
+        }
+        if (thumbnail == "no se ingreso una imagen") {
+          throw errorMessages.thumbnail;
+        }
+        if (code == "no se ingreso un codigo") {
+          throw errorMessages.code;
+        }
+        if (stock == "no se ingreso cantidad de stock") {
+          throw errorMessages.stock;
+        }
+        if (status == "no se ingreso el estado") {
+          throw errorMessages.status;
+        } else {
+          const product = {
+            id: newId,
+            title,
+            description,
+            price,
+            thumbnail,
+            code,
+            stock,
+            status,
+          };
+
+          this.products.push(product);
+          const productsString = JSON.stringify(this.products);
+          await fs.promises.writeFile(this.path, productsString);
+        }
       }
+    } else {
+      throw "la estructura del producto no es valida";
     }
   }
 
@@ -96,7 +116,7 @@ class ProductManager {
     const fileProductsParse = JSON.parse(fileProducts);
 
     if (!fileProductsParse) {
-      throw new Error("no se encontro el archivo con los productos");
+      throw "no se encontro el archivo con los productos";
     } else {
       return fileProductsParse;
     }
@@ -110,7 +130,7 @@ class ProductManager {
     if (findProd) {
       return findProd;
     } else {
-      throw new Error("producto no encontrado");
+      throw "producto no encontrado";
     }
   }
 
@@ -121,7 +141,7 @@ class ProductManager {
     const findProd = fileProductsParse.find((prod) => prod.id == id);
 
     if (findProd == undefined) {
-      throw new Error("no se encontro un producto con ese ID");
+      throw "no se encontro un producto con ese ID";
     } else {
       const validKeys = [
         "title",
@@ -130,11 +150,12 @@ class ProductManager {
         "thumbnail",
         "code",
         "stock",
+        "status",
       ];
       const updateKeys = Object.keys(updateProd);
       for (let key of updateKeys) {
         if (!validKeys.includes(key)) {
-          throw new Error(`La propiedad '${key}' no es válida`);
+          throw `La propiedad '${key}' no es válida`;
         }
       }
 
@@ -142,7 +163,7 @@ class ProductManager {
         if (prop in findProd && prop !== "id") {
           findProd[prop] = updateProd[prop];
         } else {
-          throw new Error("no se puede modificar el ID");
+          throw "no se puede modificar el ID";
         }
       }
       const productsString = JSON.stringify(fileProductsParse);
@@ -159,7 +180,7 @@ class ProductManager {
     );
 
     if (positionProduct == -1) {
-      throw new Error("producto no encontrado");
+      throw "producto no encontrado";
     } else {
       delete fileProductsParse[positionProduct];
       const productsDelete = fileProductsParse.filter(

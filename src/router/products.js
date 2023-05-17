@@ -28,12 +28,14 @@ routerProducts.get("/:pid", async (req, res) => {
   try {
     const id = req.params.pid;
     const findProduct = await prodManager.getProductById(id);
+    console.log(findProduct);
     res.json({
       status: "succes",
       msg: "producto con el id " + id,
       data: findProduct,
     });
   } catch (error) {
+    console.log(findProduct);
     res.status(404).json({
       status: "error",
       msg: "Producto no encontrado",
@@ -43,8 +45,9 @@ routerProducts.get("/:pid", async (req, res) => {
 });
 
 routerProducts.post("/", async (req, res) => {
-  const product = req.body;
   try {
+    const product = req.body;
+
     await prodManager.addProduct(product);
 
     res.status(200).json({
@@ -55,7 +58,48 @@ routerProducts.post("/", async (req, res) => {
   } catch (error) {
     res.status(404).json({
       status: "error",
-      msg: "no se pudo agregar el producto",
+      msg: "no se pudo agregar",
+      data: error,
+    });
+  }
+});
+
+routerProducts.put("/:pid", async (req, res) => {
+  try {
+    const product = req.body;
+    const id = req.params.pid;
+
+    await prodManager.updateProduct(id, product);
+
+    res.status(200).json({
+      status: "succes",
+      msg: "producto actualizado correctamente",
+      data: product,
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "error",
+      msg: "no se pudo actualizar el producto",
+      data: error,
+    });
+  }
+});
+
+routerProducts.delete("/:pid", async (req, res) => {
+  try {
+    const id = req.params.pid;
+
+    await prodManager.deleteProduct(id);
+
+    res.status(200).json({
+      status: "succes",
+      msg: "producto eliminado correctamente",
+      data: {},
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "error",
+      msg: "no se pudo eliminar el producto",
       data: error,
     });
   }
