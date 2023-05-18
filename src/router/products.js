@@ -1,5 +1,6 @@
 import express from "express";
 import ProductManager from "../classes/ProductManager.js";
+import { uploader } from "../utils.js";
 
 export const routerProducts = express.Router();
 
@@ -45,43 +46,61 @@ routerProducts.get("/:pid", async (req, res) => {
 });
 
 routerProducts.post("/", async (req, res) => {
-  try {
-    const product = req.body;
-
-    await prodManager.addProduct(product);
-
-    res.status(200).json({
-      status: "succes",
-      msg: "producto agregado correctamente",
+  if (!req.file) {
+    res.status(400).json({
+      status: "error",
+      msg: "no se cargo ningun archivo",
       data: product,
     });
-  } catch (error) {
-    res.status(404).json({
-      status: "error",
-      msg: "no se pudo agregar",
-      data: error,
-    });
+  } else {
+    try {
+      const product = req.body;
+      const img = "http://localhost:8080/" + req.file.filename;
+
+      await prodManager.addProduct(product, img);
+
+      res.status(200).json({
+        status: "succes",
+        msg: "producto agregado correctamente",
+        data: product,
+      });
+    } catch (error) {
+      res.status(404).json({
+        status: "error",
+        msg: "no se pudo agregar",
+        data: error,
+      });
+    }
   }
 });
 
 routerProducts.put("/:pid", async (req, res) => {
-  try {
-    const product = req.body;
-    const id = req.params.pid;
-
-    await prodManager.updateProduct(id, product);
-
-    res.status(200).json({
-      status: "succes",
-      msg: "producto actualizado correctamente",
-      data: product,
-    });
-  } catch (error) {
-    res.status(404).json({
+  if (!req.file) {
+    res.status(400).json({
       status: "error",
-      msg: "no se pudo actualizar el producto",
-      data: error,
+      msg: "no se cargo ningun archivo",
+      data: {},
     });
+  } else {
+    try {
+      const product = req.body;
+      const id = req.params.pid;
+      const img = "http://localhost:8080/" + req.file.filename;
+
+      await prodManager.updateProduct(id, product, img);
+
+      res.status(200).json({
+        status: "succes",
+        msg: "producto actualizado correctamente",
+        data: product,
+      });
+    } catch (error) {
+      res.status(404).json({
+        status: "error",
+        msg: "no se pudo actualizar el producto",
+        data: error,
+      });
+    }
   }
 });
 

@@ -26,7 +26,7 @@ class ProductManager {
     }
   }
 
-  async addProduct(product) {
+  async addProduct(product, img) {
     const file = await fs.promises.readFile(this.path, "utf-8");
     const products = JSON.parse(file);
 
@@ -35,13 +35,18 @@ class ProductManager {
       "title",
       "description",
       "price",
-      "thumbnail",
       "status",
       "code",
       "stock",
     ];
 
-    if (productKeys == profuctFormat) {
+    console.log("productKeys    " + productKeys);
+    console.log("productFormat    " + profuctFormat);
+
+    const isEqual =
+      JSON.stringify(productKeys) === JSON.stringify(profuctFormat);
+
+    if (isEqual) {
       const codeError = products.find((prod) => prod.code == product.code);
 
       if (codeError) {
@@ -55,7 +60,7 @@ class ProductManager {
         const description =
           product.description || "no se ingreso una descripcion";
         const price = product.price || "no se ingreso un precio";
-        const thumbnail = product.thumbnail || "no se ingreso una imagen";
+        const thumbnail = img || "no se ingreso una imagen";
         const code = product.code || "no se ingreso un codigo";
         const stock = product.stock || "no se ingreso cantidad de stock";
         const status = product.status || "no se ingreso el estado";
@@ -64,7 +69,7 @@ class ProductManager {
           title: title,
           description: description,
           price: price,
-          thumbnail: thumbnail,
+          thumbnail: img,
           code: code,
           stock: stock,
         };
@@ -134,20 +139,22 @@ class ProductManager {
     }
   }
 
-  async updateProduct(id, updateProd) {
+  async updateProduct(id, updateProd, img) {
     const fileProducts = await fs.promises.readFile(this.path, "utf-8");
     const fileProductsParse = JSON.parse(fileProducts);
 
     const findProd = fileProductsParse.find((prod) => prod.id == id);
+    console.log(findProd);
+    findProd.thumbnail = img;
+    console.log(findProd);
 
-    if (findProd == undefined) {
-      throw "no se encontro un producto con ese ID";
+    if (!findProd) {
+      throw "no se encontró un producto con ese ID";
     } else {
       const validKeys = [
         "title",
         "description",
         "price",
-        "thumbnail",
         "code",
         "stock",
         "status",
@@ -160,12 +167,17 @@ class ProductManager {
       }
 
       for (let prop in updateProd) {
-        if (prop in findProd && prop !== "id") {
-          findProd[prop] = updateProd[prop];
+        if (prop !== "id") {
+          if (prop in findProd) {
+            findProd[prop] = updateProd[prop];
+          } else {
+            throw `La propiedad '${prop}' no existe en el producto`;
+          }
         } else {
           throw "no se puede modificar el ID";
         }
       }
+
       const productsString = JSON.stringify(fileProductsParse);
       await fs.promises.writeFile(this.path, productsString);
     }
