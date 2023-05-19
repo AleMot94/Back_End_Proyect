@@ -39,10 +39,6 @@ class ProductManager {
       "code",
       "stock",
     ];
-
-    console.log("productKeys    " + productKeys);
-    console.log("productFormat    " + profuctFormat);
-
     const isEqual =
       JSON.stringify(productKeys) === JSON.stringify(profuctFormat);
 
@@ -144,9 +140,8 @@ class ProductManager {
     const fileProductsParse = JSON.parse(fileProducts);
 
     const findProd = fileProductsParse.find((prod) => prod.id == id);
-    console.log(findProd);
+
     findProd.thumbnail = img;
-    console.log(findProd);
 
     if (!findProd) {
       throw "no se encontró un producto con ese ID";
