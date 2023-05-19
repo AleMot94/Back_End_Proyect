@@ -167,14 +167,10 @@ class ProductManager {
       }
 
       for (let prop in updateProd) {
-        if (prop !== "id") {
-          if (prop in findProd) {
-            findProd[prop] = updateProd[prop];
-          } else {
-            throw `La propiedad '${prop}' no existe en el producto`;
-          }
+        if (prop in findProd) {
+          findProd[prop] = updateProd[prop];
         } else {
-          throw "no se puede modificar el ID";
+          throw `La propiedad '${prop}' no existe en el producto`;
         }
       }
 

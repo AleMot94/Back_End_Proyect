@@ -45,7 +45,7 @@ routerProducts.get("/:pid", async (req, res) => {
   }
 });
 
-routerProducts.post("/", async (req, res) => {
+routerProducts.post("/", uploader.single("file"), async (req, res) => {
   if (!req.file) {
     res.status(400).json({
       status: "error",
@@ -74,7 +74,7 @@ routerProducts.post("/", async (req, res) => {
   }
 });
 
-routerProducts.put("/:pid", async (req, res) => {
+routerProducts.put("/:pid", uploader.single("file"), async (req, res) => {
   if (!req.file) {
     res.status(400).json({
       status: "error",
