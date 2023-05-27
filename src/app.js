@@ -7,6 +7,7 @@ import { routerCart } from "./router/carts.js";
 import { routerViewProducts } from "./router/viewProducts.js";
 import { routerViewChat } from "./router/viewChat.js";
 import { Server } from "socket.io";
+import { routerViewRealTimeProducts } from "./router/viewsRealTimeProducts.js";
 
 const app = express();
 app.use(express.json());
@@ -26,6 +27,7 @@ app.use("/api/carts", routerCart);
 
 //ENDPOINTS VISTAS
 app.use("/vista/productos", routerViewProducts);
+app.use("/vista/realtimeproducts", routerViewRealTimeProducts);
 app.use("/vista/chat", routerViewChat);
 
 const httpServer = app.listen(port, () =>

@@ -1,7 +1,7 @@
 import express from "express";
 import { getProducts } from "../utils.js";
 
-export const routerViewProducts = express.Router();
+export const routerViewRealTimeProducts = express.Router();
 
 async function main() {
   try {
@@ -13,11 +13,11 @@ async function main() {
 
 const productsPromise = main();
 
-routerViewProducts.get("/", async (req, res) => {
+routerViewRealTimeProducts.get("/", async (req, res) => {
   try {
     const products = await productsPromise;
 
-    return res.render("home", { products: products });
+    return res.render("realTimeProducts", { products: products });
   } catch (error) {
     console.log(error);
   }
