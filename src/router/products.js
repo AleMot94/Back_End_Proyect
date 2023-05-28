@@ -4,7 +4,7 @@ import { uploader } from "../utils.js";
 
 export const routerProducts = express.Router();
 
-const prodManager = new ProductManager();
+export const prodManager = new ProductManager();
 
 routerProducts.get("/", async (req, res) => {
   try {

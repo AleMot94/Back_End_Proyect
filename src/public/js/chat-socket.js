@@ -36,8 +36,6 @@ chatBox.addEventListener("keyup", ({ key }) => {
 });
 
 socket.on("todos_los_msgs", (msgs) => {
-  //   console.log(msgs);
-
   const divMsgs = document.getElementById("div-msgs");
   let contenido = "";
   msgs.forEach((msg) => {

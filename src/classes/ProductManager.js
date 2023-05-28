@@ -31,7 +31,8 @@ class ProductManager {
     const products = JSON.parse(file);
 
     const productKeys = Object.keys(product);
-    const profuctFormat = [
+
+    const expectedKeys = [
       "title",
       "description",
       "price",
@@ -39,8 +40,18 @@ class ProductManager {
       "code",
       "stock",
     ];
-    const isEqual =
-      JSON.stringify(productKeys) === JSON.stringify(profuctFormat);
+    const isEqual = expectedKeys.every((key) => productKeys.includes(key));
+
+    // const profuctFormat = [
+    //   "title",
+    //   "description",
+    //   "price",
+    //   "status",
+    //   "code",
+    //   "stock",
+    // ];
+    // const isEqual =
+    //   JSON.stringify(productKeys) === JSON.stringify(profuctFormat);
 
     if (isEqual) {
       const codeError = products.find((prod) => prod.code == product.code);

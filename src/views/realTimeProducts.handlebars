@@ -1,10 +1,9 @@
 <div>
     <h1>productos</h1>
     <div id="div-products">
-        {{#each products}}
-           <p>{{this.title}}</p>
-        {{/each}}
+       
     </div>
+
     
     <h2>agregar un producto</h2>
     
@@ -16,6 +15,14 @@
         <label>Precio</label>
         <input id="price" type="number"/>
         <label>Imagen</label>
+        <input type="file" id="thumbnail"/>
+        <label>Codigo</label>
+        <input type="text"  id="code"/>
+        <label>Stock</label>
+        <input type="number" id="stock"/>
+        <label>Status</label>
+        <input type="text" id="status"/>
+        <input type="submit"/>
     </form>
 
 </div>

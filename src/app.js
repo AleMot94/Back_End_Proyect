@@ -7,7 +7,9 @@ import { routerCart } from "./router/carts.js";
 import { routerViewProducts } from "./router/viewProducts.js";
 import { routerViewChat } from "./router/viewChat.js";
 import { Server } from "socket.io";
+import { getProducts } from "./utils.js";
 import { routerViewRealTimeProducts } from "./router/viewsRealTimeProducts.js";
+import { prodManager } from "./router/products.js";
 
 const app = express();
 app.use(express.json());
@@ -37,10 +39,37 @@ const httpServer = app.listen(port, () =>
 const socketServer = new Server(httpServer);
 
 let msgs = [];
-socketServer.on("connection", (socket) => {
+socketServer.on("connection", async (socket) => {
+  console.log("Socket connection established");
+
   socket.on("msg_front_to_back", (msg) => {
     msgs.push(msg);
     console.log(msgs);
     socketServer.emit("todos_los_msgs", msgs);
+  });
+
+  async function main() {
+    try {
+      return await getProducts();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function productsReturn() {
+    return await main();
+  }
+
+  const products = await productsReturn();
+  socket.emit("todos_los_producos", { products });
+
+  socket.on("add_prod", async ({ product, img }) => {
+    try {
+      console.log({ product, img });
+      await prodManager.addProduct(product, img);
+      socket.emit("todos_los_producos", { products });
+    } catch (error) {
+      console.log(error);
+    }
   });
 });
