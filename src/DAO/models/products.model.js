@@ -6,7 +6,7 @@ export const ProductsModel = model(
     title: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true },
-    thumbnail: { type: String, required: true },
+    thumbnail: { type: String },
     code: { type: String, required: true },
     stock: { type: Number, required: true },
     status: { type: Boolean, required: true },

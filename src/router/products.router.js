@@ -1,16 +1,15 @@
 import express from "express";
-import ProductManager from "../classes/ProductManager.js";
-import { uploader } from "../utils.js";
+//import { productManager } from "../DAO/classes/ProductManager.js";
+import { uploader } from "../utils/multer.js";
 //import { ProductsModel } from "../DAO/models/products.model.js";
 import { productsServices } from "../services/products.services.js";
 
 export const routerProducts = express.Router();
 
-export const prodManager = new ProductManager();
-
 routerProducts.get("/", async (req, res) => {
   try {
-    const products = await prodManager.getProducts();
+    const products = await productsServices.getAllProducts();
+    // falta refactorizar la respuesta
     return res.status(200).json({
       status: "success",
       msg: "list of products",
@@ -48,6 +47,26 @@ routerProducts.get("/", async (req, res) => {
 routerProducts.get("/:pid", async (req, res) => {
   try {
     const id = req.params.pid;
+
+    const product = await productsServices.getProductById(id);
+
+    // falta refactorizar la respuesta
+    res.json({
+      status: "succes",
+      msg: "producto con el id " + id,
+      data: product,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(404).json({
+      status: "error",
+      msg: "Producto no encontrado",
+      data: null,
+    });
+  }
+  /* try {
+    const id = req.params.pid;
     const findProduct = await prodManager.getProductById(id);
     console.log(findProduct);
     res.json({
@@ -62,18 +81,41 @@ routerProducts.get("/:pid", async (req, res) => {
       msg: "Producto no encontrado",
       data: null,
     });
-  }
+  } */
 });
 
 routerProducts.post("/", uploader.single("file"), async (req, res) => {
   if (!req.file) {
+    // falta refactorizar la respuesta
     res.status(400).json({
       status: "error",
-      msg: "no se cargo ningun archivo",
-      data: product,
+      msg: "no file loaded",
+      data: {},
     });
   } else {
     try {
+      //falta refactorizar estas constantes
+      const product = req.body;
+      const img = "http://localhost:8080/" + req.file.filename;
+
+      const productAdd = await productsServices.addProduct(product, img);
+
+      // falta refactorizar la respuesta
+      res.status(200).json({
+        status: "succes",
+        msg: "product added successfully",
+        data: productAdd,
+      });
+    } catch (error) {
+      // falta refactorizar los errores
+      res.status(404).json({
+        status: "error",
+        msg: "could not save the product",
+        data: error,
+      });
+    }
+
+    /* try { POST DE PRODUCTOS SIN MONGO ANTIGUO 
       const product = req.body;
       const img = "http://localhost:8080/" + req.file.filename;
 
@@ -90,12 +132,13 @@ routerProducts.post("/", uploader.single("file"), async (req, res) => {
         msg: "no se pudo agregar",
         data: error,
       });
-    }
+    } */
   }
 });
 
 routerProducts.put("/:pid", uploader.single("file"), async (req, res) => {
   if (!req.file) {
+    // falta refactorizar los errores
     res.status(400).json({
       status: "error",
       msg: "no se cargo ningun archivo",
@@ -103,6 +146,34 @@ routerProducts.put("/:pid", uploader.single("file"), async (req, res) => {
     });
   } else {
     try {
+      //falta refactorizar estas constantes
+      const product = req.body;
+      const id = req.params.pid;
+      const img = "http://localhost:8080/" + req.file.filename;
+
+      const productUpdate = await productsServices.updateProduct(
+        product,
+        id,
+        img
+      );
+
+      // falta refactorizar la respuesta
+      return res.status(201).json({
+        status: "success",
+        msg: "product uptaded",
+        data: productUpdate,
+      });
+    } catch (error) {
+      // falta refactorizar logger
+      console.log(error);
+      //falta refactorizar los errores
+      return res.status(500).json({
+        status: "error",
+        msg: "something went wrong",
+        data: {},
+      });
+    }
+    /* try {
       const product = req.body;
       const id = req.params.pid;
       const img = "http://localhost:8080/" + req.file.filename;
@@ -120,12 +191,35 @@ routerProducts.put("/:pid", uploader.single("file"), async (req, res) => {
         msg: "no se pudo actualizar el producto",
         data: error,
       });
-    }
+    } */
   }
 });
 
 routerProducts.delete("/:pid", async (req, res) => {
   try {
+    //falta refactorizar estas constantes
+    const id = req.params.pid;
+
+    await productsServices.deleteProduct(id);
+
+    // falta refactorizar la respuesta
+    res.status(200).json({
+      status: "succes",
+      msg: "product delete",
+      data: {},
+    });
+  } catch (error) {
+    //falta refactorizar logger
+    console.log(error);
+    //falta refactorizar los errores
+    res.status(404).json({
+      status: "error",
+      msg: "could not delete product",
+      data: error,
+    });
+  }
+
+  /* try {
     const id = req.params.pid;
 
     await prodManager.deleteProduct(id);
@@ -141,5 +235,5 @@ routerProducts.delete("/:pid", async (req, res) => {
       msg: "no se pudo eliminar el producto",
       data: error,
     });
-  }
+  } */
 });

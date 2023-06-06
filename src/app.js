@@ -1,15 +1,17 @@
 //@ts-check
 import express from "express";
 import handlebars from "express-handlebars";
-import { __dirname, connectMongo } from "./utils.js";
+import { __dirname } from "./utils/dirname.js";
+import { connectMongo } from "./utils/mongoose.js";
 import { routerProducts } from "./router/products.router.js";
 import { routerCart } from "./router/carts.router.js";
 import { routerViewProducts } from "./router/viewProducts.router.js";
 import { routerViewChat } from "./router/viewChat.router.js";
 import { Server } from "socket.io";
-import { getProducts } from "./utils.js";
+import { getProducts } from "./utils/utils.js";
 import { routerViewRealTimeProducts } from "./router/viewsRealTimeProducts.router.js";
-import { prodManager } from "./router/products.router.js";
+
+import { productManager } from "./DAO/classes/ProductManager.js";
 
 //CONFIGURACION EXPRESS
 const app = express();
@@ -43,6 +45,7 @@ const httpServer = app.listen(port, () =>
 
 const socketServer = new Server(httpServer);
 
+// falta refactorizar sokect.io
 let msgs = [];
 socketServer.on("connection", async (socket) => {
   console.log("Socket connection established");
@@ -71,7 +74,7 @@ socketServer.on("connection", async (socket) => {
   socket.on("add_prod", async ({ product, img }) => {
     try {
       console.log({ product, img });
-      await prodManager.addProduct(product, img);
+      await productManager.addProduct(product, img);
       socket.emit("todos_los_producos", { products });
     } catch (error) {
       console.log(error);
