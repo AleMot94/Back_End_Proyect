@@ -1,12 +1,31 @@
 import express from "express";
 import ProductManager from "../classes/ProductManager.js";
 import { uploader } from "../utils.js";
+//import { ProductsModel } from "../DAO/models/products.model.js";
+import { productsServices } from "../services/products.services.js";
 
 export const routerProducts = express.Router();
 
 export const prodManager = new ProductManager();
 
 routerProducts.get("/", async (req, res) => {
+  try {
+    const products = await prodManager.getProducts();
+    return res.status(200).json({
+      status: "success",
+      msg: "list of products",
+      data: products,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: "error",
+      msg: "something went wring",
+      data: {},
+    });
+  }
+
+  /*  GET DE PRODUCTOS SIN MONGO ANTIGUO 
   try {
     const products = await prodManager.getProducts();
     const limit = req.query.limit;
@@ -23,6 +42,7 @@ routerProducts.get("/", async (req, res) => {
       data: error,
     });
   }
+ */
 });
 
 routerProducts.get("/:pid", async (req, res) => {

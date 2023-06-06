@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
 
 export const uploader = multer({ storage });
 
-// OBTIENE LOS PRODUCTOS PARA viewOriducts
+// OBTIENE LOS PRODUCTOS PARA viewProducts
 import fs from "fs";
 export const getProducts = async () => {
   const fileProducts = await fs.promises.readFile(
@@ -32,3 +32,18 @@ export const getProducts = async () => {
     return fileProductsParse;
   }
 };
+
+// CONNECT MONGOOSE
+
+import { connect } from "mongoose";
+export async function connectMongo() {
+  try {
+    await connect(
+      "mongodb+srv://alejandro1031m:UWj8WnywnULhodYx@ale-cluster0.cywkeum.mongodb.net/?retryWrites=true&w=majority"
+    );
+    console.log("plug to mongo");
+  } catch (error) {
+    console.log(error);
+    throw "can not connect to the db";
+  }
+}

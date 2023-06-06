@@ -1,21 +1,26 @@
 //@ts-check
 import express from "express";
 import handlebars from "express-handlebars";
-import { __dirname } from "./utils.js";
-import { routerProducts } from "./router/products.js";
-import { routerCart } from "./router/carts.js";
-import { routerViewProducts } from "./router/viewProducts.js";
-import { routerViewChat } from "./router/viewChat.js";
+import { __dirname, connectMongo } from "./utils.js";
+import { routerProducts } from "./router/products.router.js";
+import { routerCart } from "./router/carts.router.js";
+import { routerViewProducts } from "./router/viewProducts.router.js";
+import { routerViewChat } from "./router/viewChat.router.js";
 import { Server } from "socket.io";
 import { getProducts } from "./utils.js";
-import { routerViewRealTimeProducts } from "./router/viewsRealTimeProducts.js";
-import { prodManager } from "./router/products.js";
+import { routerViewRealTimeProducts } from "./router/viewsRealTimeProducts.router.js";
+import { prodManager } from "./router/products.router.js";
 
+//CONFIGURACION EXPRESS
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const port = 8080;
 
+// CONFIGURACION MONGO
+connectMongo();
+
+//CONFIGURACION CARPETA PUBLIC
 app.use(express.static(__dirname + "/public"));
 
 //CONFIGURACION DE HANDLEBARS
@@ -24,7 +29,7 @@ app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
 //ENDPOINTS API
-app.use("/api/products", routerProducts);
+app.use("/api/products", routerProducts); // EL GET AHORA SE HACE A MONGO
 app.use("/api/carts", routerCart);
 
 //ENDPOINTS VISTAS
