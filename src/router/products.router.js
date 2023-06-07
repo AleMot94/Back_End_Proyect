@@ -53,7 +53,7 @@ routerProducts.get("/:pid", async (req, res) => {
     // falta refactorizar la respuesta
     res.json({
       status: "succes",
-      msg: "producto con el id " + id,
+      msg: "product found whit id : " + id,
       data: product,
     });
   } catch (error) {
@@ -61,7 +61,7 @@ routerProducts.get("/:pid", async (req, res) => {
 
     res.status(404).json({
       status: "error",
-      msg: "Producto no encontrado",
+      msg: "product not found",
       data: null,
     });
   }
@@ -86,7 +86,7 @@ routerProducts.get("/:pid", async (req, res) => {
 
 routerProducts.post("/", uploader.single("file"), async (req, res) => {
   if (!req.file) {
-    // falta refactorizar la respuesta
+    // falta refactorizar los errores
     res.status(400).json({
       status: "error",
       msg: "no file loaded",
@@ -111,7 +111,7 @@ routerProducts.post("/", uploader.single("file"), async (req, res) => {
       res.status(404).json({
         status: "error",
         msg: "could not save the product",
-        data: error,
+        data: {},
       });
     }
 

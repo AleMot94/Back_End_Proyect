@@ -75,7 +75,7 @@ class ProductsService {
   //GET BY ID
   async getProductById(id) {
     this.validateId(id);
-    const productFind = ProductsModel.findOne({ _id: id });
+    const productFind = await ProductsModel.findOne({ _id: id });
     return productFind;
   }
   //GET BY ID
