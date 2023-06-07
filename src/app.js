@@ -10,8 +10,10 @@ import { routerViewChat } from "./router/viewChat.router.js";
 import { Server } from "socket.io";
 import { getProducts } from "./utils/utils.js";
 import { routerViewRealTimeProducts } from "./router/viewsRealTimeProducts.router.js";
-
 import { productManager } from "./DAO/classes/ProductManager.js";
+
+import { messagesServices } from "./services/messages.services.js";
+import path from "path";
 
 //CONFIGURACION EXPRESS
 const app = express();
@@ -23,11 +25,12 @@ const port = 8080;
 connectMongo();
 
 //CONFIGURACION CARPETA PUBLIC
-app.use(express.static(__dirname + "/public"));
+
+app.use(express.static(__dirname + "../../public"));
 
 //CONFIGURACION DE HANDLEBARS
 app.engine("handlebars", handlebars.engine());
-app.set("views", __dirname + "/views");
+app.set("views", __dirname + "../../views");
 app.set("view engine", "handlebars");
 
 //ENDPOINTS API
@@ -46,15 +49,40 @@ const httpServer = app.listen(port, () =>
 const socketServer = new Server(httpServer);
 
 // falta refactorizar sokect.io
-let msgs = [];
+//let msgs = [];
 socketServer.on("connection", async (socket) => {
   console.log("Socket connection established");
 
-  socket.on("msg_front_to_back", (msg) => {
-    msgs.push(msg);
+  async function getMessagesMongo() {
+    try {
+      const messagges = await messagesServices.getAllMessages();
+      return messagges;
+    } catch (error) {
+      console.log(error);
+      throw "ERROR";
+    }
+  }
+
+  async function addMessageMongo(message) {
+    try {
+      await messagesServices.addMessage(message);
+    } catch (error) {
+      console.log(error);
+      throw "ERROR";
+    }
+  }
+
+  socket.on("msg_front_to_back", async (msg) => {
+    await addMessageMongo(msg);
+    const msgs = await getMessagesMongo();
     console.log(msgs);
     socketServer.emit("todos_los_msgs", msgs);
+    /*  msgs.push(msg);
+    console.log(msgs);
+    socketServer.emit("todos_los_msgs", msgs); */
   });
+
+  // SOKECT VISTA PRODUCTOS CONECTADO A LOS ARCHIVOS LOCALES DE PERSISTENCIA (VIEJO)
 
   async function main() {
     try {

@@ -1,8 +1,11 @@
+<head>
+  <link rel="stylesheet" href="../public/styles.css">
+</head>
 <div>
   <h1>Chat en el servidor</h1>
 
   <h3>Usuario :  <span id="span-nombre"></span></h3>
-  <h3>Listado de msgs:</h3>
+  <h3 className="chat-h3">Listado de msgs:</h3>
   <div id="div-msgs" style="border: 1px solid violet;margin-bottom: 20px;">
     Loading...
   </div>
@@ -11,4 +14,4 @@
 </div>
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="/js/chat-socket.js"></script>
+<script src="/js/chat-socket.js" type="module"></script>
