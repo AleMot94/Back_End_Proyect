@@ -2,13 +2,8 @@ import { Schema, model } from "mongoose";
 //import mongoosePaginate from "mongoose-paginate-v2";
 
 const schema =
-  /*  new Schema({
-    products: { type: Array },
-    quantity: { type: Number },
-  }) */
   // ESQUEMA EN MONGO PARA PONER EL ObjetId (un objeto dentro de otro)
   new Schema({
-    //quantity: { type: Number },
     products: {
       type: [
         {

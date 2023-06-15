@@ -32,9 +32,38 @@ class ProductsService {
   }
 
   // GET
-  async getAllProducts() {
-    const products = await ProductsModel.find({});
-    return products;
+  async getAllProducts(page, limit) {
+    // productos sin aplanar
+    const products = await ProductsModel.paginate(
+      {},
+      { limit: limit || 5, page: page || 1 }
+    );
+    // docs de paginate (aplanado de los productos)
+    let productsFlat = products.docs.map((prod) => {
+      return {
+        id: prod._id.toString(),
+        title: prod.title,
+        description: prod.description,
+        price: prod.price,
+        thumbnail: prod.thumbnail,
+        code: prod.code,
+        stock: prod.stock,
+        status: prod.status,
+      };
+    });
+
+    // productos aplanados con datos de paginate (respuesta para el front)
+    const productsFlatPaginate = {
+      products: productsFlat,
+      totalDocs: products.totalDocs,
+      limit: products.limit,
+      totalPages: products.totalPages,
+      page: products.page,
+      prevPage: products.prevPage,
+      nextPage: products.nextPage,
+    };
+
+    return productsFlatPaginate;
   }
   // GET
 

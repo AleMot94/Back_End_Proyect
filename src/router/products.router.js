@@ -8,7 +8,8 @@ export const routerProducts = express.Router();
 
 routerProducts.get("/", async (req, res) => {
   try {
-    const products = await productsServices.getAllProducts();
+    const { page, limit } = req.query;
+    const products = await productsServices.getAllProducts(page, limit);
     // falta refactorizar la respuesta
     return res.status(200).json({
       status: "success",

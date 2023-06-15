@@ -46,34 +46,27 @@ class CartsServices {
   async addProductToCart(idCart, idProduct) {
     this.validateIdCart(idCart);
     this.validateIdProduct(idProduct);
-    let quantity = 0;
 
+    let quantity = 0;
     let cart = await CartsModel.findOne({ _id: idCart }).populate(
       "products.product"
     );
+    const product = await ProductsModel.findOne({ _id: idProduct });
 
-    const newProduct = await ProductsModel.findOne({ _id: idProduct });
-    /* let cart = await CartsModel.findOne({ _id: idCart }); // SIN POPULAR
-
-    let cartPopulate = await CartsModel.findOne({ _id: idCart }).populate(
-      "products"
-    ); // DATO POPULADO */
-
-    cart.products.push({ product: newProduct, quantity });
+    cart.products.push({ product: product, quantity });
 
     console.log("DATO SIN POPULAR " + cart);
     console.log(" DATO POPULADO " + JSON.stringify(cart, null, 2));
 
     await CartsModel.updateOne({ _id: idCart }, cart);
-
-    // VIEJO NO TIENE LA POPULACION
-    // const cartFind = await CartsModel.findOne({ _id: idCart });
-    // const productFind = await ProductsModel.findOne({ _id: idProduct });
-
-    // cartFind.products.push(productFind);
-
-    // await cartFind.save();
   }
+  // VIEJO NO TIENE LA POPULACION
+  // const cartFind = await CartsModel.findOne({ _id: idCart });
+  // const productFind = await ProductsModel.findOne({ _id: idProduct });
+
+  // cartFind.products.push(productFind);
+
+  // await cartFind.save();
 
   async deleteCart(id) {
     this.validateIdCart(id);
