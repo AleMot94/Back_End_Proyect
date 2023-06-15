@@ -1,4 +1,4 @@
-import { ProductsModel } from "../DAO/models/products.model.js";
+import ProductsModel from "../DAO/models/products.model.js";
 
 class ProductsService {
   // VALIDACIONES FALTAN REFACTORIZAR

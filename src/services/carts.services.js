@@ -1,5 +1,5 @@
 import { CartsModel } from "../DAO/models/carts.model.js";
-import { ProductsModel } from "../DAO/models/products.model.js";
+import ProductsModel from "../DAO/models/products.model.js";
 
 class CartsServices {
   async validateIdCart(id) {
@@ -24,11 +24,17 @@ class CartsServices {
   }
 
   async addCart() {
-    const cart = await CartsModel.create({
-      products: [],
-      quantity: 0,
-    });
+    //let quantity = 0;
+    const products = [];
+    const cart = await CartsModel.create({ products });
     return cart;
+
+    // VIEJO, NO TIENE POPULACION
+    // const cart = await CartsModel.create({
+    //   products: [],
+    //   quantity: 0,
+    // });
+    // return cart;
   }
 
   async getCartById(id) {
@@ -40,13 +46,33 @@ class CartsServices {
   async addProductToCart(idCart, idProduct) {
     this.validateIdCart(idCart);
     this.validateIdProduct(idProduct);
+    let quantity = 0;
 
-    const cartFind = await CartsModel.findOne({ _id: idCart });
-    const productFind = await ProductsModel.findOne({ _id: idProduct });
+    let cart = await CartsModel.findOne({ _id: idCart }).populate(
+      "products.product"
+    );
 
-    cartFind.products.push(productFind);
+    const newProduct = await ProductsModel.findOne({ _id: idProduct });
+    /* let cart = await CartsModel.findOne({ _id: idCart }); // SIN POPULAR
 
-    await cartFind.save();
+    let cartPopulate = await CartsModel.findOne({ _id: idCart }).populate(
+      "products"
+    ); // DATO POPULADO */
+
+    cart.products.push({ product: newProduct, quantity });
+
+    console.log("DATO SIN POPULAR " + cart);
+    console.log(" DATO POPULADO " + JSON.stringify(cart, null, 2));
+
+    await CartsModel.updateOne({ _id: idCart }, cart);
+
+    // VIEJO NO TIENE LA POPULACION
+    // const cartFind = await CartsModel.findOne({ _id: idCart });
+    // const productFind = await ProductsModel.findOne({ _id: idProduct });
+
+    // cartFind.products.push(productFind);
+
+    // await cartFind.save();
   }
 
   async deleteCart(id) {

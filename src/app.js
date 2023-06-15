@@ -13,7 +13,6 @@ import { routerViewRealTimeProducts } from "./router/viewsRealTimeProducts.route
 import { productManager } from "./DAO/classes/ProductManager.js";
 
 import { messagesServices } from "./services/messages.services.js";
-import path from "path";
 
 //CONFIGURACION EXPRESS
 const app = express();
@@ -35,12 +34,12 @@ app.set("view engine", "handlebars");
 
 //ENDPOINTS API
 app.use("/api/products", routerProducts); // EL GET AHORA SE HACE A MONGO
-app.use("/api/carts", routerCart);
+app.use("/api/carts", routerCart); // EL GET AHORA SE HACE A MONGO
 
 //ENDPOINTS VISTAS
-app.use("/vista/productos", routerViewProducts);
-app.use("/vista/realtimeproducts", routerViewRealTimeProducts);
-app.use("/vista/chat", routerViewChat);
+app.use("/vista/productos", routerViewProducts); // ANDA CON MONGO
+app.use("/vista/realtimeproducts", routerViewRealTimeProducts); // NO ANDA CON MONGO
+app.use("/vista/chat", routerViewChat); // ANDA CON MONGO
 
 const httpServer = app.listen(port, () =>
   console.log(`escuchando el puerto ${port}`)
