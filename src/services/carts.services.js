@@ -115,8 +115,11 @@ class CartsServices {
 
   async deleteCart(id) {
     this.validateIdCart(id);
-    const deleted = await CartsModel.deleteOne({ _id: id });
-    return deleted;
+    const cart = await CartsModel.findOne({ _id: id });
+
+    cart.products = [];
+
+    await cart.save();
   }
 
   async updateCart(idCart, newProducts) {
