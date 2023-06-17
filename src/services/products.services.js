@@ -38,6 +38,7 @@ class ProductsService {
       {},
       { limit: limit || 5, page: page || 1 }
     );
+    console.log(products);
     // docs de paginate (aplanado de los productos)
     let productsFlat = products.docs.map((prod) => {
       return {
@@ -61,6 +62,8 @@ class ProductsService {
       page: products.page,
       prevPage: products.prevPage,
       nextPage: products.nextPage,
+      hasPrevPage: products.hasPrevPage,
+      hasNextPage: products.hasNextPage,
     };
 
     return productsFlatPaginate;

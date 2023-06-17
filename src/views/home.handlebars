@@ -1,6 +1,25 @@
 <div>
     <h1>productos</h1>
     {{#each products}}
-        <p>{{this.title}}</p>
+    <hr/>
+        <p>title: {{this.title}}</p> <p>description: {{this.description}}</p> <p>price: {{this.price}}</p> <p>thumbnail: {{this.thumbnail}}</p> <p>code: {{this.code}}</p> <p>stock: {{this.stock}}</p> <p>status: {{this.status}}</p> <p>id: {{this.id}}</p> <button>Agregar a carrito</button>
     {{/each}}
+    <hr/>
+    <hr/>
+    <hr/>
+    <h2>paginate</h2>
+    <p>totalDocs: {{totalDocs}}</p>
+    <p>limit: {{limit}}</p>
+    <p>totalPages: {{totalPages}}</p>
+    <p>page: {{page}}</p>
+    <p>prevPage: {{prevPage}}</p>
+    <p>nextPage: {{nextPage}}</p> 
+    <p>hasPrevPage: {{hasPrevPage}}</p> 
+    <p>hasNextPage: {{hasNextPage}}</p> 
+    {{#if hasPrevPage}}
+    <a href="http://localhost:8080/vista/productos?page={{prevPage}}">Prev</a>
+    {{/if}}
+    {{#if hasNextPage}}
+    <a href="http://localhost:8080/vista/productos?page={{nextPage}}">Next</a>
+    {{/if}}
 </div>

@@ -37,8 +37,8 @@ app.use("/api/products", routerProducts); // EL GET AHORA SE HACE A MONGO
 app.use("/api/carts", routerCart); // EL GET AHORA SE HACE A MONGO
 
 //ENDPOINTS VISTAS
-app.use("/vista/productos", routerViewProducts); // ANDA CON MONGO
-app.use("/vista/realtimeproducts", routerViewRealTimeProducts); // NO ANDA CON MONGO
+app.use("/vista/productos", routerViewProducts); //NO  ANDA CON MONGO
+app.use("/vista/realtimeproducts", routerViewRealTimeProducts); // ANDA CON MONGO
 app.use("/vista/chat", routerViewChat); // ANDA CON MONGO
 
 const httpServer = app.listen(port, () =>
