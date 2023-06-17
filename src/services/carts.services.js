@@ -67,6 +67,14 @@ class CartsServices {
     return cartFind;
   }
 
+  async getCartByIdPopulate(id) {
+    this.validateIdCart(id);
+    const cartFind = await CartsModel.findOne({ _id: id }).populate(
+      "products.product"
+    );
+    return cartFind.toObject();
+  }
+
   async addProductToCart(idCart, idProduct, quantity) {
     this.validateIdCart(idCart);
     this.validateIdProduct(idProduct);

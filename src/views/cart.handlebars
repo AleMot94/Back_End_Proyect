@@ -1,3 +1,8 @@
 <h1>Cart</h1>
 
-<script src="/js/cart-view.js"></script>
+<h2>Producots en el carrito</h2>
+{{#each cart.products}}
+    <hr/>
+  <p>title: {{this.product.title}}</p> <p>id: {{this.product._id}}</p> <p>description: {{this.product.description}}</p> <p>price: {{this.product.price}}</p> <p>thumbnail: {{this.product.thumbnail}}</p>  <p>code: {{this.product.code}}</p> <p>stock: {{this.product.stock}}</p> <p>status: {{this.product.status}}</p>
+{{/each}}
+

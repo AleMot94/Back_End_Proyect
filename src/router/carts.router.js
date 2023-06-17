@@ -6,7 +6,8 @@ export const routerCart = express.Router();
 
 routerCart.get("/", async (req, res) => {
   try {
-    const carts = await cartsServices.getAllCarts();
+    const { page, limit } = req.query;
+    const carts = await cartsServices.getAllCarts(page, limit);
 
     res.status(200).json({
       status: "succes",
@@ -34,8 +35,6 @@ routerCart.get("/:cid", async (req, res) => {
       data: cart,
     });
   } catch (error) {
-    console.log(error);
-
     res.status(404).json({
       status: "error",
       msg: "cart not found",
