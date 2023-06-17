@@ -5,7 +5,7 @@ class CartsServices {
   async validateIdCart(id) {
     const cartFind = await CartsModel.findOne({ _id: id });
     if (!cartFind) {
-      console.log("error: id not found.");
+      console.log("error: id not found in cart.");
       throw "ERROR";
     }
   }
@@ -13,7 +13,7 @@ class CartsServices {
   async validateIdProduct(id) {
     const productFind = await ProductsModel.findOne({ _id: id });
     if (!productFind) {
-      console.log("error: id not found.");
+      console.log("error: id not found in products.");
       throw "ERROR";
     }
   }
@@ -43,21 +43,27 @@ class CartsServices {
     return cartFind;
   }
 
-  async addProductToCart(idCart, idProduct) {
+  async addProductToCart(idCart, idProduct, quantity) {
     this.validateIdCart(idCart);
     this.validateIdProduct(idProduct);
 
-    let quantity = 0;
     let cart = await CartsModel.findOne({ _id: idCart }).populate(
       "products.product"
     );
     const product = await ProductsModel.findOne({ _id: idProduct });
 
-    cart.products.push({ product: product, quantity });
+    const existingProductIndex = cart.products.findIndex(
+      (item) => item.product._id.toString() === idProduct
+    );
+
+    if (existingProductIndex !== -1) {
+      cart.products[existingProductIndex].quantity += parseInt(quantity);
+    } else {
+      cart.products.push({ product: product, quantity: parseInt(quantity) });
+    }
 
     // console.log("DATO SIN POPULAR " + cart);
     // console.log(" DATO POPULADO " + JSON.stringify(cart, null, 2));
-
     await CartsModel.updateOne({ _id: idCart }, cart);
 
     return JSON.stringify(cart, null, 2);
@@ -113,8 +119,18 @@ class CartsServices {
     return deleted;
   }
 
-  async updateCart(idCart) {
+  async updateCart(idCart, newProducts) {
     this.validateIdCart(idCart);
+
+    const cart = await CartsModel.findOne({ _id: idCart });
+
+    const updatedProducts = newProducts.map((product) => ({
+      _id: product._id.toString(),
+    }));
+
+    cart.products = updatedProducts;
+
+    await cart.save();
   }
 }
 export const cartsServices = new CartsServices();

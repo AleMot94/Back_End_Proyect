@@ -58,12 +58,10 @@ routerProducts.get("/:pid", async (req, res) => {
       data: product,
     });
   } catch (error) {
-    console.log(error);
-
     res.status(404).json({
       status: "error",
       msg: "product not found",
-      data: null,
+      data: error,
     });
   }
   /* try {

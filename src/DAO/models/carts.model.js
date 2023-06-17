@@ -11,7 +11,7 @@ const schema =
             type: Schema.Types.ObjectId,
             ref: "products",
           },
-          quantity: { type: Number },
+          quantity: { type: Number, default: 0 },
         },
       ],
       //default : [],  indica por defecto que es un array, si no tiene ningun valor

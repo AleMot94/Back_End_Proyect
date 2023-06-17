@@ -89,17 +89,21 @@ routerCart.post("/:cid/product/:pid", async (req, res) => {
   try {
     const idCart = req.params.cid;
     const idProduct = req.params.pid;
+    const quantity = req.query.quantity;
 
-    await cartsServices.addProductToCart(idCart, idProduct);
+    const productInCart = await cartsServices.addProductToCart(
+      idCart,
+      idProduct,
+      quantity
+    );
 
+    //console.log(productInCart);  el addProduct retorna el carrito populado
     res.status(200).json({
       status: "success",
       msg: "product added successfully",
       data: {},
     });
   } catch (error) {
-    console.log(error);
-
     res.status(404).json({
       status: "error",
       msg: "could not save the product in the cart",
@@ -173,16 +177,19 @@ routerCart.delete("/:cid/products/:pid", async (req, res) => {
 routerCart.put("/:cid", async (req, res) => {
   try {
     const idCart = req.params.cid;
+    const newProducts = req.body;
+
+    await cartsServices.updateCart(idCart, newProducts);
 
     res.status(200).json({
       status: "success",
-      msg: "product in cart update",
+      msg: "products in cart update",
       data: {},
     });
   } catch (error) {
     res.status(404).json({
       status: "error",
-      msg: "could not update product in cart",
+      msg: "could not update products in cart",
       data: error,
     });
   }
