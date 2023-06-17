@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-//import mongoosePaginate from "mongoose-paginate-v2";
+import mongoosePaginate from "mongoose-paginate-v2";
 
 const schema =
   // ESQUEMA EN MONGO PARA PONER EL ObjetId (un objeto dentro de otro)
@@ -18,6 +18,6 @@ const schema =
     },
   });
 
-//schema.plugin(mongoosePaginate);
+schema.plugin(mongoosePaginate);
 
 export const CartsModel = model("carts", schema);

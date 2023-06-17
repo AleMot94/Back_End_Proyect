@@ -7,6 +7,7 @@ import { routerProducts } from "./router/products.router.js";
 import { routerCart } from "./router/carts.router.js";
 import { routerViewProducts } from "./router/viewProducts.router.js";
 import { routerViewChat } from "./router/viewChat.router.js";
+import { routerViewCart } from "./router/viewCart.router.js";
 import { Server } from "socket.io";
 import { getProducts } from "./utils/utils.js";
 import { routerViewRealTimeProducts } from "./router/viewsRealTimeProducts.router.js";
@@ -37,9 +38,10 @@ app.use("/api/products", routerProducts); // EL GET AHORA SE HACE A MONGO
 app.use("/api/carts", routerCart); // EL GET AHORA SE HACE A MONGO
 
 //ENDPOINTS VISTAS
-app.use("/vista/productos", routerViewProducts); //NO  ANDA CON MONGO
-app.use("/vista/realtimeproducts", routerViewRealTimeProducts); // ANDA CON MONGO
+app.use("/vista/productos", routerViewProducts); //ANDA CON MONGO
+app.use("/vista/cart", routerViewCart);
 app.use("/vista/chat", routerViewChat); // ANDA CON MONGO
+app.use("/vista/realtimeproducts", routerViewRealTimeProducts); // NO ANDA CON MONGO
 
 const httpServer = app.listen(port, () =>
   console.log(`escuchando el puerto ${port}`)

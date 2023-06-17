@@ -18,9 +18,33 @@ class CartsServices {
     }
   }
 
-  async getAllCarts() {
-    const carts = await CartsModel.find({});
-    return carts;
+  async getAllCarts(limit, page) {
+    const carts = await CartsModel.paginate(
+      {},
+      { limit: limit || 5, page: page || 1 }
+    );
+
+    const cartsFlat = carts.docs.flatMap((cart) => [
+      { cart: cart._id, products: cart.products },
+    ]);
+    const cartProduct = carts.docs.flatMap((cart) => cart.products);
+
+    const cartsProductsFlatPaginate = {
+      carts: {
+        cart: cartsFlat,
+        products: cartProduct,
+      },
+      totalDocs: carts.totalDocs,
+      limit: carts.limit,
+      totalPages: carts.totalPages,
+      page: carts.page,
+      prevPage: carts.prevPage,
+      nextPage: carts.nextPage,
+      hasPrevPage: carts.hasPrevPage,
+      hasNextPage: carts.hasNextPage,
+    };
+
+    return cartsProductsFlatPaginate;
   }
 
   async addCart() {

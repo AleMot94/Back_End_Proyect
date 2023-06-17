@@ -39,6 +39,7 @@ class ProductsService {
       { limit: limit || 5, page: page || 1 }
     );
     console.log(products);
+
     // docs de paginate (aplanado de los productos)
     let productsFlat = products.docs.map((prod) => {
       return {
@@ -52,6 +53,7 @@ class ProductsService {
         status: prod.status,
       };
     });
+    console.log(productsFlat);
 
     // productos aplanados con datos de paginate (respuesta para el front)
     const productsFlatPaginate = {
