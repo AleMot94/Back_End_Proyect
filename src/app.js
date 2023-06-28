@@ -35,7 +35,10 @@ connectMongo();
 app.use(express.static(__dirname + "../../public"));
 
 //CONFIGURACION COOKIE-PARSER
-app.use(cookieParser("codeSDFGHJ789456"));
+app.use(cookieParser("codeSDFGHJ789456")); // PRIMER EJEMPLO
+app.use(
+  session({ secret: "es-secreto", resave: true, saveUninitialized: true })
+); // EJEMPLO CON SESSION  -- de cajon--
 
 //CONFIGURACION DE HANDLEBARS
 app.engine("handlebars", handlebars.engine());
@@ -54,7 +57,7 @@ app.use("/vista/realtimeproducts", routerViewRealTimeProducts); // NO ANDA CON M
 
 //ENDPOINTS EJEMPLO DE COOKIES
 app.use("/cookie", routerCookies);
-app.use("/session", routerSession);
+app.use("/session", routerSession); // session guarda la informacion en el server y solo le manda un ID al front
 
 const httpServer = app.listen(port, () =>
   console.log(`escuchando el puerto ${port}`)
