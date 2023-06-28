@@ -13,6 +13,13 @@ import { getProducts } from "./utils/utils.js";
 import { routerViewRealTimeProducts } from "./router/viewsRealTimeProducts.router.js";
 import { productManager } from "./DAO/classes/ProductManager.js";
 
+//cookies
+import cookieParser from "cookie-parser";
+import { routerCookies } from "./router/cookies.router.js";
+//express session
+import session from "express-session";
+import { routerSession } from "./router/session.router.js";
+
 import { messagesServices } from "./services/messages.services.js";
 
 //CONFIGURACION EXPRESS
@@ -25,8 +32,10 @@ const port = 8080;
 connectMongo();
 
 //CONFIGURACION CARPETA PUBLIC
-
 app.use(express.static(__dirname + "../../public"));
+
+//CONFIGURACION COOKIE-PARSER
+app.use(cookieParser("codeSDFGHJ789456"));
 
 //CONFIGURACION DE HANDLEBARS
 app.engine("handlebars", handlebars.engine());
@@ -42,6 +51,10 @@ app.use("/vista/productos", routerViewProducts); //ANDA CON MONGO
 app.use("/vista/cart", routerViewCart);
 app.use("/vista/chat", routerViewChat); // ANDA CON MONGO
 app.use("/vista/realtimeproducts", routerViewRealTimeProducts); // NO ANDA CON MONGO
+
+//ENDPOINTS EJEMPLO DE COOKIES
+app.use("/cookie", routerCookies);
+app.use("/session", routerSession);
 
 const httpServer = app.listen(port, () =>
   console.log(`escuchando el puerto ${port}`)
