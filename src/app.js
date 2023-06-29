@@ -12,6 +12,9 @@ import { Server } from "socket.io";
 import { getProducts } from "./utils/utils.js";
 import { routerViewRealTimeProducts } from "./router/viewsRealTimeProducts.router.js";
 import { productManager } from "./DAO/classes/ProductManager.js";
+import { messagesServices } from "./services/messages.services.js";
+import { routerViewLogin } from "./router/viewLogin.router.js";
+import { routerLogin } from "./router/login.router.js";
 
 //cookies
 import cookieParser from "cookie-parser";
@@ -19,8 +22,9 @@ import { routerCookies } from "./router/cookies.router.js";
 //express session
 import session from "express-session";
 import { routerSession } from "./router/session.router.js";
-
-import { messagesServices } from "./services/messages.services.js";
+import FileStore from "session-file-store";
+// connect-mongo con session
+import MongoStore from "connect-mongo";
 
 //CONFIGURACION EXPRESS
 const app = express();
@@ -36,9 +40,37 @@ app.use(express.static(__dirname + "../../public"));
 
 //CONFIGURACION COOKIE-PARSER
 app.use(cookieParser("codeSDFGHJ789456")); // PRIMER EJEMPLO
-app.use(
+/* app.use(
   session({ secret: "es-secreto", resave: true, saveUninitialized: true })
-); // EJEMPLO CON SESSION  -- de cajon--
+); */ // EJEMPLO CON SESSION  -- de cajon--
+
+// PERSISTENCIA DE SESSION CON FILE_SYSTEM
+const FileStoreSession = FileStore(session); // npm i session-file-store y se guarda en una variable
+/* app.use(
+  session({
+    store: new FileStoreSession({
+      path: "./session",
+      ttl: 86400 * 7,
+    }),
+    secret: "es-secreto",
+    resave: true,
+    saveUninitialized: true,
+  })
+); */
+
+// PERSISTENCIA DE SESSION CON MONGO  npm i connect-mongo
+app.use(
+  session({
+    store: MongoStore.create({
+      mongoUrl:
+        "mongodb+srv://alejandro1031m:UWj8WnywnULhodYx@ale-cluster0.cywkeum.mongodb.net/?retryWrites=true&w=majority",
+      ttl: 86400 * 7,
+    }),
+    secret: "es-secreto",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
 //CONFIGURACION DE HANDLEBARS
 app.engine("handlebars", handlebars.engine());
@@ -58,6 +90,10 @@ app.use("/vista/realtimeproducts", routerViewRealTimeProducts); // NO ANDA CON M
 //ENDPOINTS EJEMPLO DE COOKIES
 app.use("/cookie", routerCookies);
 app.use("/session", routerSession); // session guarda la informacion en el server y solo le manda un ID al front
+
+//ENDPOINTS LOGIN Y LA VISTA
+app.use("/api/session", routerLogin);
+app.use("/", routerViewLogin);
 
 const httpServer = app.listen(port, () =>
   console.log(`escuchando el puerto ${port}`)

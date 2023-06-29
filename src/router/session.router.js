@@ -1,4 +1,5 @@
 import express from "express";
+import { auth } from "../middlewares/auth.js";
 
 export const routerSession = express.Router();
 // http://localhost:8080/session/login?username=pepe&password=pepepass
@@ -36,14 +37,6 @@ routerSession.get("/login", (req, res) => {
   req.session.admin = false;
   res.send("login success");
 });
-
-function auth(req, res, next) {
-  if (req.session.user) {
-    return next();
-  } else {
-    return res.status(401).send("no estas logeado");
-  }
-}
 
 routerSession.get("/perfil", auth, (req, res) => {
   console.log(req.session);
