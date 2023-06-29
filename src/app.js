@@ -37,26 +37,26 @@ connectMongo();
 
 //CONFIGURACION CARPETA PUBLIC
 app.use(express.static(__dirname + "../../public"));
-
+/* 
 //CONFIGURACION COOKIE-PARSER
-app.use(cookieParser("codeSDFGHJ789456")); // PRIMER EJEMPLO
-/* app.use(
-  session({ secret: "es-secreto", resave: true, saveUninitialized: true })
-); */ // EJEMPLO CON SESSION  -- de cajon--
+  app.use(cookieParser("codeSDFGHJ789456")); // PRIMER EJEMPLO (DATOS GUARDADOS EN EL FRONT)
+  app.use(
+    session({ secret: "es-secreto", resave: true, saveUninitialized: true })
+); // EJEMPLO CON SESSION  -- de cajon--
 
 // PERSISTENCIA DE SESSION CON FILE_SYSTEM
-const FileStoreSession = FileStore(session); // npm i session-file-store y se guarda en una variable
-/* app.use(
-  session({
-    store: new FileStoreSession({
-      path: "./session",
-      ttl: 86400 * 7,
-    }),
-    secret: "es-secreto",
-    resave: true,
-    saveUninitialized: true,
-  })
-); */
+  const FileStoreSession = FileStore(session); // npm i session-file-store y se guarda en una variable
+  app.use(
+    session({
+      store: new FileStoreSession({
+        path: "./session",
+        ttl: 86400 * 7,
+      }),
+      secret: "es-secreto",
+      resave: true,
+      saveUninitialized: true,
+    })
+  ); */
 
 // PERSISTENCIA DE SESSION CON MONGO  npm i connect-mongo
 app.use(

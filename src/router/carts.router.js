@@ -12,13 +12,13 @@ routerCart.get("/", async (req, res) => {
     res.status(200).json({
       status: "succes",
       msg: "all the carts",
-      data: carts,
+      payload: carts,
     });
   } catch (error) {
     res.status(404).json({
       status: "error",
       msg: "something wrong",
-      data: error,
+      payload: error,
     });
   }
 });
@@ -32,13 +32,13 @@ routerCart.get("/:cid", async (req, res) => {
     res.status(200).json({
       status: "succes",
       msg: "cart found whit id : " + id,
-      data: cart,
+      payload: cart,
     });
   } catch (error) {
     res.status(404).json({
       status: "error",
       msg: "cart not found",
-      data: error,
+      payload: error,
     });
   }
 
@@ -66,13 +66,13 @@ routerCart.post("/", async (req, res) => {
     res.status(200).json({
       status: "success",
       msg: "cart created",
-      data: cart,
+      payload: cart,
     });
   } catch (error) {
     res.status(404).json({
       status: "error",
       msg: "could not save the cart",
-      data: error,
+      payload: error,
     });
   }
 
@@ -100,13 +100,13 @@ routerCart.post("/:cid/product/:pid", async (req, res) => {
     res.status(200).json({
       status: "success",
       msg: "product added successfully",
-      data: {},
+      payload: {},
     });
   } catch (error) {
     res.status(404).json({
       status: "error",
       msg: "could not save the product in the cart",
-      data: {},
+      payload: {},
     });
   }
 
@@ -139,7 +139,7 @@ routerCart.delete("/:cid", async (req, res) => {
     res.status(200).json({
       status: "success",
       msg: "cart delete",
-      data: {},
+      payload: {},
     });
   } catch (error) {
     console.log(error);
@@ -147,7 +147,7 @@ routerCart.delete("/:cid", async (req, res) => {
     res.status(404).json({
       status: "error",
       msg: "could not delete cart",
-      data: error,
+      payload: error,
     });
   }
 });
@@ -162,13 +162,13 @@ routerCart.delete("/:cid/products/:pid", async (req, res) => {
     res.status(200).json({
       status: "success",
       msg: "product in cart delete",
-      data: {},
+      payload: {},
     });
   } catch (error) {
     res.status(404).json({
       status: "error",
       msg: "could not delete product in cart",
-      data: error,
+      payload: error,
     });
   }
 });
@@ -183,13 +183,13 @@ routerCart.put("/:cid", async (req, res) => {
     res.status(200).json({
       status: "success",
       msg: "products in cart update",
-      data: {},
+      payload: {},
     });
   } catch (error) {
     res.status(404).json({
       status: "error",
       msg: "could not update products in cart",
-      data: error,
+      payload: error,
     });
   }
 });

@@ -9,19 +9,30 @@ export const routerProducts = express.Router();
 routerProducts.get("/", async (req, res) => {
   try {
     const { page, limit } = req.query;
-    const products = await productsServices.getAllProducts(page, limit);
+    const allProductsWithPaginate = await productsServices.getAllProducts(
+      page,
+      limit
+    );
+    const arrayProducts = allProductsWithPaginate.products;
+
     // falta refactorizar la respuesta
     return res.status(200).json({
       status: "success",
       msg: "list of products",
-      data: products,
+      payload: arrayProducts,
+      totalPages: allProductsWithPaginate.totalPages,
+      prevPage: allProductsWithPaginate.prevPage,
+      nextPage: allProductsWithPaginate.nextPage,
+      page: allProductsWithPaginate.page,
+      hasPrevPage: allProductsWithPaginate.hasPrevPage,
+      hasNextPage: allProductsWithPaginate.hasNextPage,
     });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
       status: "error",
       msg: "something went wring",
-      data: {},
+      payload: {},
     });
   }
 
@@ -55,13 +66,13 @@ routerProducts.get("/:pid", async (req, res) => {
     res.json({
       status: "succes",
       msg: "product found whit id : " + id,
-      data: product,
+      payload: product,
     });
   } catch (error) {
     res.status(404).json({
       status: "error",
       msg: "product not found",
-      data: error,
+      payload: error,
     });
   }
   /* try {
@@ -89,7 +100,7 @@ routerProducts.post("/", uploader.single("file"), async (req, res) => {
     res.status(400).json({
       status: "error",
       msg: "no file loaded",
-      data: {},
+      payload: {},
     });
   } else {
     try {
@@ -110,7 +121,7 @@ routerProducts.post("/", uploader.single("file"), async (req, res) => {
       res.status(404).json({
         status: "error",
         msg: "could not save the product",
-        data: {},
+        payload: {},
       });
     }
 
@@ -141,7 +152,7 @@ routerProducts.put("/:pid", uploader.single("file"), async (req, res) => {
     res.status(400).json({
       status: "error",
       msg: "no se cargo ningun archivo",
-      data: {},
+      payload: {},
     });
   } else {
     try {
@@ -160,7 +171,7 @@ routerProducts.put("/:pid", uploader.single("file"), async (req, res) => {
       return res.status(201).json({
         status: "success",
         msg: "product uptaded",
-        data: productUpdate,
+        payload: productUpdate,
       });
     } catch (error) {
       // falta refactorizar logger
@@ -169,7 +180,7 @@ routerProducts.put("/:pid", uploader.single("file"), async (req, res) => {
       return res.status(500).json({
         status: "error",
         msg: "something went wrong",
-        data: {},
+        payload: {},
       });
     }
     /* try {
@@ -205,7 +216,7 @@ routerProducts.delete("/:pid", async (req, res) => {
     res.status(200).json({
       status: "succes",
       msg: "product delete",
-      data: {},
+      payload: {},
     });
   } catch (error) {
     //falta refactorizar logger
@@ -214,7 +225,7 @@ routerProducts.delete("/:pid", async (req, res) => {
     res.status(404).json({
       status: "error",
       msg: "could not delete product",
-      data: error,
+      payload: error,
     });
   }
 
