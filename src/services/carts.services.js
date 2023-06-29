@@ -1,5 +1,5 @@
 import { CartsModel } from "../DAO/models/carts.model.js";
-import ProductsModel from "../DAO/models/products.model.js";
+import { ProductsModel } from "../DAO/models/products.model.js";
 
 class CartsServices {
   async validateIdCart(id) {

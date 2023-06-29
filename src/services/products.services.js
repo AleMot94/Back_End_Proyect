@@ -1,4 +1,4 @@
-import ProductsModel from "../DAO/models/products.model.js";
+import { ProductsModel } from "../DAO/models/products.model.js";
 
 class ProductsService {
   // VALIDACIONES FALTAN REFACTORIZAR
@@ -75,17 +75,23 @@ class ProductsService {
     { title, description, price, code, stock, status },
     thumbnail
   ) {
-    this.validatePost(title, description, price, code, stock, status);
-    const productCreated = await ProductsModel.create({
-      title,
-      description,
-      price,
-      code,
-      stock,
-      status,
-      thumbnail,
-    });
-    return productCreated;
+    try {
+      this.validatePost(title, description, price, code, stock, status);
+      const productCreated = await ProductsModel.create({
+        title,
+        description,
+        price,
+        code,
+        stock,
+        status,
+        thumbnail,
+      });
+
+      return productCreated;
+    } catch (error) {
+      console.log(error);
+      throw "code already exist";
+    }
   }
   // POST
 

@@ -114,13 +114,13 @@ routerProducts.post("/", uploader.single("file"), async (req, res) => {
       res.status(200).json({
         status: "succes",
         msg: "product added successfully",
-        data: productAdd,
+        payload: productAdd,
       });
     } catch (error) {
       // falta refactorizar los errores
       res.status(404).json({
         status: "error",
-        msg: "could not save the product",
+        msg: "could not save the product " + error,
         payload: {},
       });
     }
