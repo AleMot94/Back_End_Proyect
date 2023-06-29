@@ -179,7 +179,7 @@ routerProducts.put("/:pid", uploader.single("file"), async (req, res) => {
       //falta refactorizar los errores
       return res.status(500).json({
         status: "error",
-        msg: "something went wrong",
+        msg: "something went wrong " + error,
         payload: {},
       });
     }

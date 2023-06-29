@@ -17,7 +17,7 @@ class ProductsService {
       console.log("validation error: please complete the fields.");
       throw "VALIDATION ERROR";
     }
-    if (!productFind) {
+    if (productFind) {
       console.log("error: id not found.");
       throw "ERROR";
     }
@@ -101,12 +101,27 @@ class ProductsService {
     id,
     thumbnail
   ) {
-    this.validatePut(id, title, description, price, code, stock, status);
-    const productUptaded = await ProductsModel.updateOne(
-      { _id: id },
-      { title, description, price, code, stock, status, thumbnail }
-    );
-    return productUptaded;
+    try {
+      await this.validatePut(
+        title,
+        description,
+        price,
+        code,
+        stock,
+        status,
+        id
+      );
+
+      const productUpdated = await ProductsModel.updateOne(
+        { _id: id },
+        { title, description, price, code, stock, status, thumbnail }
+      );
+
+      return productUpdated;
+    } catch (error) {
+      console.log(error);
+      throw "ERROR: Product not found";
+    }
   }
   // PUT
 
