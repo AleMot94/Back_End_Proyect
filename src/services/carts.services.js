@@ -21,19 +21,15 @@ class CartsServices {
   async getAllCarts(limit, page) {
     const carts = await CartsModel.paginate(
       {},
-      { limit: limit || 5, page: page || 1 }
+      { limit: limit || 5, page: page || 1, populate: "products.product" }
     );
 
-    const cartsFlat = carts.docs.flatMap((cart) => [
+    const cartsFlat = carts.docs.map((cart) => [
       { cart: cart._id, products: cart.products },
     ]);
-    const cartProduct = carts.docs.flatMap((cart) => cart.products);
 
     const cartsProductsFlatPaginate = {
-      carts: {
-        cart: cartsFlat,
-        products: cartProduct,
-      },
+      carts: cartsFlat,
       totalDocs: carts.totalDocs,
       limit: carts.limit,
       totalPages: carts.totalPages,
