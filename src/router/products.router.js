@@ -8,10 +8,11 @@ export const routerProducts = express.Router();
 
 routerProducts.get("/", async (req, res) => {
   try {
-    const { page, limit } = req.query;
+    const { page, limit, sort } = req.query;
     const allProductsWithPaginate = await productsServices.getAllProducts(
       page,
-      limit
+      limit,
+      sort
     );
     const arrayProducts = allProductsWithPaginate.products;
 

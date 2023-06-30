@@ -49,7 +49,7 @@ class ProductsService {
   }
 
   // GET
-  async getAllProducts(page, limit) {
+  async getAllProducts(page, limit, sort) {
     // productos sin aplanar
     const products = await ProductsModel.paginate(
       {},
@@ -69,6 +69,12 @@ class ProductsService {
         status: prod.status,
       };
     });
+
+    if (sort === "asc") {
+      productsFlat.sort((a, b) => a.price - b.price);
+    } else if (sort === "desc") {
+      productsFlat.sort((a, b) => b.price - a.price);
+    }
 
     // productos aplanados con datos de paginate (respuesta para el front)
     const productsFlatPaginate = {
