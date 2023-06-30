@@ -88,15 +88,9 @@ routerCart.post("/:cid/product/:pid", async (req, res) => {
   try {
     const idCart = req.params.cid;
     const idProduct = req.params.pid;
-    const quantity = req.query.quantity;
 
-    const productInCart = await cartsServices.addProductToCart(
-      idCart,
-      idProduct,
-      quantity
-    );
+    await cartsServices.addProductToCart(idCart, idProduct);
 
-    //console.log(productInCart);  el addProduct retorna el carrito populado
     res.status(200).json({
       status: "success",
       msg: "product added successfully",
@@ -109,25 +103,6 @@ routerCart.post("/:cid/product/:pid", async (req, res) => {
       payload: {},
     });
   }
-
-  /* try {
-    const idCart = req.params.cid;
-    const idProduct = req.params.pid;
-
-    await cartManager.addProductToCart(idCart, idProduct);
-
-    res.status(200).json({
-      status: "succes",
-      msg: "producto agregado correctamente",
-      data: {},
-    });
-  } catch (error) {
-    res.status(404).json({
-      status: "error",
-      msg: "hubo un error",
-      data: error.message,
-    });
-  } */
 });
 
 routerCart.delete("/:cid", async (req, res) => {

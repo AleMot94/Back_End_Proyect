@@ -1,4 +1,5 @@
 import { ProductsModel } from "../DAO/models/products.model.js";
+import { CartsModel } from "../DAO/models/carts.model.js";
 
 class ProductsService {
   // VALIDACIONES FALTAN REFACTORIZAR
@@ -27,6 +28,22 @@ class ProductsService {
     const productFind = await ProductsModel.findOne({ _id: id });
     if (!productFind) {
       console.log("error: id not found.");
+      throw "ERROR";
+    }
+  }
+
+  async validateIdCart(id) {
+    const cartFind = await CartsModel.findOne({ _id: id });
+    if (!cartFind) {
+      console.log("error: id not found in cart.");
+      throw "ERROR";
+    }
+  }
+
+  async validateIdProduct(id) {
+    const productFind = await ProductsModel.findOne({ _id: id });
+    if (!productFind) {
+      console.log("error: id not found in products.");
       throw "ERROR";
     }
   }
@@ -140,6 +157,28 @@ class ProductsService {
     return deleted;
   }
   //DELETE
+
+  async updateQuantityProduct(idCart, idProduct, quantity) {
+    try {
+      this.validateIdCart(idCart);
+
+      let cart = await CartsModel.findOne({ _id: idCart });
+
+      const productInCart = cart.products.find(
+        (item) => item.product.toString() === idProduct
+      );
+
+      if (productInCart) {
+        productInCart.quantity += quantity;
+        await cart.save();
+      } else {
+        console.log("Product not found in cart.");
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
 }
 
 export const productsServices = new ProductsService();

@@ -146,6 +146,27 @@ routerProducts.post("/", uploader.single("file"), async (req, res) => {
   }
 });
 
+routerProducts.put("/:cid/product/:pid", async (req, res) => {
+  try {
+    const idCart = req.params.cid;
+    const idProduct = req.params.pid;
+    const quantity = parseInt(req.body.quantity);
+
+    await productsServices.updateQuantityProduct(idCart, idProduct, quantity);
+    res.status(200).json({
+      status: "success",
+      msg: "product added successfully",
+      payload: {},
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "error",
+      msg: "could not save the product in the cart",
+      payload: {},
+    });
+  }
+});
+
 routerProducts.put("/:pid", uploader.single("file"), async (req, res) => {
   if (!req.file) {
     // falta refactorizar los errores

@@ -75,7 +75,7 @@ class CartsServices {
     return cartFind.toObject();
   }
 
-  async addProductToCart(idCart, idProduct, quantity) {
+  async addProductToCart(idCart, idProduct) {
     this.validateIdCart(idCart);
     this.validateIdProduct(idProduct);
 
@@ -89,9 +89,9 @@ class CartsServices {
     );
 
     if (existingProductIndex !== -1) {
-      cart.products[existingProductIndex].quantity += parseInt(quantity);
+      cart.products[existingProductIndex].quantity++;
     } else {
-      cart.products.push({ product: product, quantity: parseInt(quantity) });
+      cart.products.push({ product: product, quantity: 1 });
     }
 
     // console.log("DATO SIN POPULAR " + cart);
