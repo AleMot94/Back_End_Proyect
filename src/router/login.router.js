@@ -1,5 +1,6 @@
 import express from "express";
 import { UserModel } from "../DAO/models/user.model.js";
+import { createHash, isValidPassword } from "../utils/bcrypt.js";
 
 export const routerLogin = express.Router();
 
@@ -12,7 +13,7 @@ routerLogin.post("/register", async (req, res) => {
     await UserModel.create({
       firstName,
       lastName,
-      password,
+      password: createHash(password),
       email,
       age,
       admin: false,
@@ -28,20 +29,26 @@ routerLogin.post("/register", async (req, res) => {
 });
 
 routerLogin.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).render("error-page", { msg: "faltan datos" });
-  }
   try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).render("error-page", { msg: "faltan datos" });
+    }
     const foundUser = await UserModel.findOne({ email });
-    if (foundUser && foundUser.password === password) {
+    if (
+      foundUser &&
+      isValidPassword(
+        password,
+        foundUser.password
+      ) /* foundUser.password === password */
+    ) {
       req.session.firstName = foundUser.firstName;
       req.session.email = foundUser.email;
       req.session.admin = foundUser.admin;
       return res.redirect("/vista/productos");
     } else {
       return res
-        .status(400)
+        .status(401)
         .render("error-page", { msg: "email o pass incorrectos" });
     }
   } catch (e) {

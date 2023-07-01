@@ -20,4 +20,9 @@ const schema =
 
 schema.plugin(mongoosePaginate);
 
+// EJEMPLO DE POPULATE CON ESTE MIDDLEWARES PARA TODOS LOD FIND
+/* schema.pre("find", function () {
+  this.populate("products.product");
+}); */
+
 export const CartsModel = model("carts", schema);

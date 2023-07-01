@@ -130,9 +130,6 @@ socketServer.on("connection", async (socket) => {
     const msgs = await getMessagesMongo();
     console.log(msgs);
     socketServer.emit("todos_los_msgs", msgs);
-    /*  msgs.push(msg);
-    console.log(msgs);
-    socketServer.emit("todos_los_msgs", msgs); */
   });
 
   // SOKECT VISTA PRODUCTOS CONECTADO A LOS ARCHIVOS LOCALES DE PERSISTENCIA (VIEJO)
