@@ -61,4 +61,4 @@ routerLogin.post("/login", async (req, res) => {
 
 /* routerLogin.get("/perfil", auth, (req, res) => {
   res.render("perfil");
-}); */
+}); adminCod3r123 // adminCoder@coder.com */
