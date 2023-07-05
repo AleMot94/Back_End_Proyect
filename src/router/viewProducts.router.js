@@ -8,7 +8,7 @@ export const routerViewProducts = express.Router();
 routerViewProducts.get("/", async (req, res) => {
   try {
     const { page, limit } = req.query;
-    const user = req.session.firstName;
+    const user = req.session.user.firstName;
 
     const products = await productsServices.getAllProducts(page, limit);
 

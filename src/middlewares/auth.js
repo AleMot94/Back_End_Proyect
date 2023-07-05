@@ -1,5 +1,5 @@
 export function auth(req, res, next) {
-  if (req.session.email) {
+  if (req.session.user.email) {
     return next();
   } else {
     return res
@@ -9,7 +9,7 @@ export function auth(req, res, next) {
 }
 
 export function authAdmin(req, res, next) {
-  if (req.session.email && req.session.admin == true) {
+  if (req.session.user.email && req.session.user.admin == true) {
     return next();
   }
   return res.status(403).render("error-page", { msg: "solo para admin" });

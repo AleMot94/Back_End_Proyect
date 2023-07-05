@@ -26,6 +26,10 @@ import FileStore from "session-file-store";
 // connect-mongo con session
 import MongoStore from "connect-mongo";
 
+//passport
+import passport from "passport";
+import { initPassport } from "./config/passport.config.js";
+
 //CONFIGURACION EXPRESS
 const app = express();
 app.use(express.json());
@@ -38,7 +42,7 @@ connectMongo();
 //CONFIGURACION CARPETA PUBLIC
 app.use(express.static(__dirname + "../../public"));
 /* 
-//CONFIGURACION COOKIE-PARSER
+//CONFIGURACION COOKIE-PARSER  npm i cookie-parser
   app.use(cookieParser("codeSDFGHJ789456")); // PRIMER EJEMPLO (DATOS GUARDADOS EN EL FRONT)
   app.use(
     session({ secret: "es-secreto", resave: true, saveUninitialized: true })
@@ -71,6 +75,11 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+//CONFIGURASION PASSPORT
+initPassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 //CONFIGURACION DE HANDLEBARS
 app.engine("handlebars", handlebars.engine());

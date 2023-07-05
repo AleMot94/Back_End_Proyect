@@ -30,3 +30,7 @@ routerViewLogin.get("/logout", (req, res) => {
 routerViewLogin.get("/solo-admin", authAdmin, (req, res) => {
   res.render("admin", {});
 });
+
+routerViewLogin.get("/failregister", async (req, res) => {
+  return res.render("failregister", {});
+});
