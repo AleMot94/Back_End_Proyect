@@ -100,7 +100,7 @@ app.use("/vista/realtimeproducts", routerViewRealTimeProducts); // NO ANDA CON M
 app.use("/cookie", routerCookies);
 app.use("/session", routerSession); // session guarda la informacion en el server y solo le manda un ID al front
 
-//ENDPOINTS LOGIN Y LA VISTA
+//ENDPOINTS EJEMPLO DE PASSPORT CON ESTRATEGIA LOCAL Y GITHUB (LOGIN)
 app.use("/api/session", routerLogin);
 app.use("/", routerViewLogin);
 

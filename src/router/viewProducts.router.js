@@ -8,7 +8,7 @@ export const routerViewProducts = express.Router();
 routerViewProducts.get("/", async (req, res) => {
   try {
     const { page, limit } = req.query;
-    const user = req.session.user.firstName;
+    const user = req.session.user?.firstName || "No iniciaste sesión";
 
     const products = await productsServices.getAllProducts(page, limit);
 
@@ -26,5 +26,6 @@ routerViewProducts.get("/", async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    throw error;
   }
 });

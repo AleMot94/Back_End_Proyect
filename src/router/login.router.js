@@ -1,11 +1,9 @@
 import express from "express";
-import { UserModel } from "../DAO/models/user.model.js";
-import { createHash, isValidPassword } from "../utils/bcrypt.js";
-
 import passport from "passport";
 
 export const routerLogin = express.Router();
 
+// PASSPORT LOCAL
 routerLogin.post(
   "/register",
   passport.authenticate("register", { failureRedirect: "/failregister" }),
@@ -22,7 +20,7 @@ routerLogin.post(
     };
 
     //return res.json({ msg: "ok", payload: req.user });
-    return res.redirect("/login");
+    return res.redirect("/profile");
 
     // REGISTER SIN PASSPORT
     /*   try {
@@ -97,3 +95,30 @@ routerLogin.post(
   } */
   }
 );
+
+// PASSPORT CON GITHUB
+routerLogin.get(
+  "/github",
+  passport.authenticate("github", { scope: ["user.email"] })
+);
+
+routerLogin.get(
+  "/githubcallback",
+  passport.authenticate("github", { failureRedirect: "/login" }),
+  (req, res) => {
+    req.session.user = req.user;
+    res.redirect("/vista/productos");
+  }
+);
+
+routerLogin.get("/logout", (req, res) => {
+  req.session.destroy((error) => {
+    if (error) {
+      return res.render("error-page", {
+        msg: "error al querer cerrar session",
+      });
+    }
+    res.send("logout success");
+  });
+  return res.redirect("/login");
+});

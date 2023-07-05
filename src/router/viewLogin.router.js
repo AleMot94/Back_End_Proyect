@@ -15,18 +15,6 @@ routerViewLogin.get("/profile", auth, (req, res) => {
   return res.render("profile", {});
 });
 
-routerViewLogin.get("/logout", (req, res) => {
-  req.session.destroy((error) => {
-    if (error) {
-      return res.render("error-page", {
-        msg: "error al querer cerrar session",
-      });
-    }
-    res.send("logout success");
-  });
-  return res.redirect("/login");
-});
-
 routerViewLogin.get("/solo-admin", authAdmin, (req, res) => {
   res.render("admin", {});
 });
