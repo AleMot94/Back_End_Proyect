@@ -3,6 +3,10 @@ import { auth, authAdmin } from "../middlewares/auth.js";
 
 export const routerViewLogin = express.Router();
 
+routerViewLogin.get("/", (req, res) => {
+  return res.render("login", {});
+});
+
 routerViewLogin.get("/login", (req, res) => {
   return res.render("login", {});
 });

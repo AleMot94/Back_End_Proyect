@@ -1,34 +1,37 @@
 //@ts-check
+//variables globales
 import express from "express";
 import handlebars from "express-handlebars";
 import { __dirname } from "./utils/dirname.js";
+import { Server } from "socket.io";
 import { connectMongo } from "./utils/mongoose.js";
-import { routerProducts } from "./router/products.router.js";
-import { routerCart } from "./router/carts.router.js";
+// routers vistas
 import { routerViewProducts } from "./router/viewProducts.router.js";
+import { routerViewLogin } from "./router/viewLogin.router.js";
 import { routerViewChat } from "./router/viewChat.router.js";
 import { routerViewCart } from "./router/viewCart.router.js";
-import { Server } from "socket.io";
-import { getProducts } from "./utils/utils.js";
 import { routerViewRealTimeProducts } from "./router/viewsRealTimeProducts.router.js";
-import { productManager } from "./DAO/classes/ProductManager.js";
-import { messagesServices } from "./services/messages.services.js";
-import { routerViewLogin } from "./router/viewLogin.router.js";
+// routers api
+import { routerProducts } from "./router/products.router.js";
 import { routerLogin } from "./router/login.router.js";
-
+import { routerCart } from "./router/carts.router.js";
+// servicios del chat (habria que refactorizar junto con el socket)
+import { messagesServices } from "./services/messages.services.js";
 //cookies
-import cookieParser from "cookie-parser";
+//import cookieParser from "cookie-parser";
 import { routerCookies } from "./router/cookies.router.js";
 //express session
 import session from "express-session";
 import { routerSession } from "./router/session.router.js";
-import FileStore from "session-file-store";
+//import FileStore from "session-file-store";
 // connect-mongo con session
 import MongoStore from "connect-mongo";
-
 //passport
 import passport from "passport";
 import { initPassport } from "./config/passport.config.js";
+// ejemplo viejo base de datos sin mongo
+import { getProducts } from "./utils/utils.js";
+import { productManager } from "./DAO/classes/ProductManager.js";
 
 //CONFIGURACION EXPRESS
 const app = express();
@@ -86,11 +89,11 @@ app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "../../views");
 app.set("view engine", "handlebars");
 
-//ENDPOINTS API
-app.use("/api/products", routerProducts); // EL GET AHORA SE HACE A MONGO
-app.use("/api/carts", routerCart); // EL GET AHORA SE HACE A MONGO
+//ENDPOINTS API PRODUCTOS Y CARRITOS
+app.use("/api/products", routerProducts);
+app.use("/api/carts", routerCart);
 
-//ENDPOINTS VISTAS
+//ENDPOINTS VISTAS PRODUCTOS Y CARRITOS
 app.use("/vista/productos", routerViewProducts); //ANDA CON MONGO
 app.use("/vista/cart", routerViewCart);
 app.use("/vista/chat", routerViewChat); // ANDA CON MONGO
@@ -98,8 +101,8 @@ app.use("/vista/realtimeproducts", routerViewRealTimeProducts); // NO ANDA CON M
 
 //ENDPOINTS EJEMPLO DE COOKIES
 app.use("/cookie", routerCookies);
+//ENDPOINTS EJEMPLO DE SESIONES
 app.use("/session", routerSession); // session guarda la informacion en el server y solo le manda un ID al front
-
 //ENDPOINTS EJEMPLO DE PASSPORT CON ESTRATEGIA LOCAL Y GITHUB (LOGIN)
 app.use("/api/session", routerLogin);
 app.use("/", routerViewLogin);
